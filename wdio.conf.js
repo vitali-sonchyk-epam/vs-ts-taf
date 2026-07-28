@@ -1,5 +1,4 @@
-const timestamp = () => new Date().toISOString().replace('T', ' ').slice(0, 19);
-
+const allureReporter = require('@wdio/allure-reporter').default;
 exports.config = {
   runner: 'local',
 
@@ -32,28 +31,38 @@ exports.config = {
   connectionRetryTimeout: 90000,
   connectionRetryCount: 3,
 
-  reporters: ['spec', 'allure'],
+  reporters: [
+    'spec',
+    [
+      'allure',
+      {
+        outputDir: 'allure-results',
+        disableWebdriverScreenshotsReporting: true,
+      },
+    ],
+  ],
 
   framework: 'mocha',
   mochaOpts: {
-    timeout: 300000,
+    timeout: 120000,
   },
 
-  onPrepare() {
-    console.warn(`Start time: ${timestamp()}`);
-  },
-
-  async before() {
-    await browser.setWindowSize(1280, 720);
-  },
-
-  async afterTest(_test, _context, { error }) {
-    if (error) {
-      await browser.takeScreenshot();
+  async beforeTest() {
+    if (this._wdioFirstTestDone) {
+      await browser.reloadSession();
     }
+    this._wdioFirstTestDone = true;
+    await browser.maximizeWindow();
   },
 
-  onComplete() {
-    console.warn(`Finish time: ${timestamp()}`);
-  }
+  async afterTest(test, _context, { error }) {
+    if (error) {
+      const screenshot = await browser.takeScreenshot();
+      allureReporter.addAttachment(
+        `${test.title} (screenshot)`,
+        Buffer.from(screenshot, 'base64'),
+        'image/png',
+      );
+    }
+},
 };
