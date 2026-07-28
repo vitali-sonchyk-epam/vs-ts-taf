@@ -10,7 +10,7 @@ End-to-end UI test automation for the [Google Cloud Pricing Calculator](https://
 | Area | Tool |
 | --- | --- |
 | Test runner | WebdriverIO 9 (`@wdio/cli`, `@wdio/local-runner`) |
-| Language | TypeScript 5 (transpiled on the fly via `tsx`) |
+| Language | TypeScript 7 (transpiled on the fly via `tsx`) |
 | Test framework | Mocha (`@wdio/mocha-framework`) |
 | Assertions | `expect-webdriverio` (built-in, auto-retrying) |
 | Reporting | Spec reporter + Allure (`@wdio/allure-reporter`) |
@@ -59,8 +59,14 @@ Allure results are written to `allure-results/` during a run.
 # Generate a static HTML report from the latest results
 npm run report:generate
 
-# Or serve an interactive report
+# Open the generated static report
+npm run report:open
+
+# Or serve an interactive report directly from the raw results
 npx allure serve allure-results
+
+# Clean out old results before a fresh run
+npm run results:clean
 ```
 
 ## Project structure
