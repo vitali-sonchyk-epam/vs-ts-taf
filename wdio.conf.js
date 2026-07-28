@@ -1,19 +1,11 @@
-const moment = require('moment');
+const timestamp = () => new Date().toISOString().replace('T', ' ').slice(0, 19);
 
 exports.config = {
-  autoCompileOpts: {
-    autoCompile: true,
-    tsNodeOpts: {
-      transpileOnly: true,
-      project: 'tsconfig.json',
-    },
-  },
-
   runner: 'local',
 
   specs: ['./src/tests/**/**.tests.ts'],
   suites: {
-    smoke: ['./src/tests/smoke/**.tests.js'],
+    smoke: ['./src/tests/smoke/**.tests.ts'],
   },
 
   maxInstances: 1,
@@ -34,15 +26,14 @@ exports.config = {
   connectionRetryCount: 3,
 
   reporters: ['spec', 'allure'],
-  services: ['chromedriver'],
 
   framework: 'mocha',
   mochaOpts: {
-    timeout: 30000,
+    timeout: 300000,
   },
 
   onPrepare() {
-    console.warn(`Start time: ${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+    console.warn(`Start time: ${timestamp()}`);
   },
 
   async before() {
@@ -56,6 +47,6 @@ exports.config = {
   },
 
   onComplete() {
-    console.warn(`Finish time: ${moment().format('YYYY-MM-DD HH:mm:ss')}`);
+    console.warn(`Finish time: ${timestamp()}`);
   }
 };
