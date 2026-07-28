@@ -9,30 +9,20 @@ export class WelcomePage extends BasePage {
     return $('.Gxwdcd button');
   }
 
-  private get addEstimationModal() {
-    return $('div[role="dialog"][aria-label="Add to this estimate"]');
-  }
-
   constructor() {
     super('/products/calculator');
   }
 
   async openComputeEngine(){
     Logger.info('Adding a Compute Engine estimate');
-    const estimationModal = await this.clickAddToEstimateButton();
-    return await estimationModal.openComputeEngineBlock();
+    const modal = await this.clickAddToEstimateButton();
+    return await modal.openComputeEngineBlock();
   }
 
   async clickAddToEstimateButton() {
     Logger.info('Clicking "Add to estimate" button');
     await expect(this.addToEstimateButton).toBeDisplayed();
     await this.addToEstimateButton.click();
-    return await this.waitForAddEstimationModal();
-  }
-
-  private async waitForAddEstimationModal() {
-    Logger.debug('Waiting for the "Add to this estimate" modal');
-    await expect(this.addEstimationModal).toBeDisplayed();
-    return estimationModal;
+    return await estimationModal.waitForDisplayed();
   }
 }

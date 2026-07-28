@@ -10,7 +10,7 @@ export class BasePage {
   async open() {
     Logger.info('Opening page: %s', this.url);
     const url = await browser.url(this.url);
-    await this.waitForPageLoad();
+    await this.waitForPageUrl();
     await this.confirmCookies();
     return url;
   }
@@ -22,7 +22,7 @@ export class BasePage {
     }
   }
 
-  async waitForPageLoad(){
+  async waitForPageUrl(){
     Logger.debug('Waiting for URL to contain: %s', this.url);
     await expect(browser).toHaveUrl(expect.stringContaining(this.url));
   }

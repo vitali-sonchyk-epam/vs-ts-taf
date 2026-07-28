@@ -5,3 +5,4 @@ export function parseNumber(rawValue: string, fieldName = 'value'): number {
   }
   return parsedValue;
 }
+
