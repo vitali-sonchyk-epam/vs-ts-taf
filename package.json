@@ -1,5 +1,5 @@
 {
-  "name": "atm-int",
+  "name": "vs-ts-taf",
   "version": "1.0.0",
   "description": "Automated Testing Mentoring with JS: Intermediate",
   "private": true,
@@ -9,19 +9,18 @@
   },
   "license": "EPAM Systems",
   "dependencies": {
-    "@types/node": "^20.14.0",
     "@wdio/allure-reporter": "^9.30.0",
     "@wdio/cli": "^9.30.0",
     "@wdio/local-runner": "^9.30.0",
     "@wdio/mocha-framework": "^9.30.0",
     "@wdio/spec-reporter": "^9.29.1",
-    "allure-commandline": "2.13.8",
-    "lodash": "^4.17.21"
+    "allure-commandline": "2.13.8"
   },
   "engines": {
     "node": ">=18.20.0"
   },
   "devDependencies": {
+    "@types/node": "^20.14.0",
     "dotenv": "^16.4.5",
     "tsx": "^4.23.1",
     "typescript": "^5.4.5",

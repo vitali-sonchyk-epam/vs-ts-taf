@@ -5,10 +5,6 @@ export class BasePage {
     return $('button.glue-cookie-notification-bar__accept');
   }
 
-  get currentUrl(): Promise<string> {
-    return browser.getUrl();
-  }
-
   constructor(private readonly url: string) {}
 
   async open() {

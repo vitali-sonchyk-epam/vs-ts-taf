@@ -1,9 +1,9 @@
 import { ChainablePromiseElement } from 'webdriverio';
 
 export class BaseComponent {
-    constructor(private readonly rootElementLocator: () => ChainablePromiseElement) {}
+  constructor(private readonly rootElementLocator: () => ChainablePromiseElement) {}
 
-    protected get rootElement(): ChainablePromiseElement {
-        return this.rootElementLocator();
-    }
+  protected get rootElement(): ChainablePromiseElement {
+    return this.rootElementLocator();
+  }
 }

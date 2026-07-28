@@ -13,10 +13,10 @@ describe('Cloud Calculator', () => {
     it(`Total usage limit for ${instances} instance(s) is ${expectedUsageLimit}`, async () => {
       await welcomePage.open();
 
-      const  calculatorPage = await welcomePage.openComputeEngine();
+      const calculatorPage = await welcomePage.openComputeEngine();
       await calculatorPage.setNumberOfInstances(instances);
       const usageLimit = await calculatorPage.getTotalUsageLimit();
       expect(usageLimit).toEqual(expectedUsageLimit);
     });
-  }); 
+  });
 });

@@ -76,6 +76,7 @@ src/
       BaseComponent.ts   # Lazy root-element base for components
       EstimationModal.ts # "Add to this estimate" modal
   utils/
+    Logger.ts            # Thin static wrapper over @wdio/logger ("taf" namespace)
     number.ts            # parseNumber helper
   tests/
     smoke/
@@ -95,5 +96,5 @@ tsconfig.json            # TypeScript compiler options
 ## Configuration notes
 
 - `baseUrl` is set to `https://cloud.google.com` in `wdio.conf.js`.
-- `logLevel` is `trace` for detailed diagnostics; lower it to `info`/`warn` for quieter runs.
+- Logging is tuned via `logLevel` (`warn`) plus a per-logger `logLevels` map: WDIO's own protocol loggers are capped at `warn` (info/debug BiDi noise is hidden, warnings/errors are kept) while the project's `taf` logger stays at `info` so business-step logs remain visible. Raise levels for deeper diagnostics.
 - Tests run against modern **WebDriver BiDi** (the WebdriverIO 9 default).

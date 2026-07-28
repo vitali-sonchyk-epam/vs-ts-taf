@@ -13,3 +13,6 @@ src/**/*.js.map
 .playwright-mcp
 
 .env
+
+# Log files
+*.log
