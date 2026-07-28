@@ -1,5 +1,6 @@
 import { BaseComponent } from './BaseComponent';
 import { CalculatorPage } from '../pages/Calculator.page';
+import { Logger } from '../../utils/Logger';
 
 const calculatorPage = new CalculatorPage();
 
@@ -14,6 +15,7 @@ export class EstimationModal extends BaseComponent {
   }
 
   async openComputeEngineBlock() {
+    Logger.info('Selecting the Compute Engine block');
     await this.computeEngineBlock.click();
     await calculatorPage.waitForPageLoad();
     return calculatorPage;

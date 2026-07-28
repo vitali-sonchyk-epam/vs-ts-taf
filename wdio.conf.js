@@ -16,7 +16,14 @@ exports.config = {
     },
   ],
 
-  logLevel: 'trace',
+  logLevel: 'warn',
+  logLevels: {
+    webdriver: 'warn',
+    devtools: 'warn',
+    '@wdio/local-runner': 'warn',
+    '@wdio/utils': 'warn',
+    taf: 'info',
+  },
 
   bail: 0,
   baseUrl: 'https://cloud.google.com',
