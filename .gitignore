@@ -4,5 +4,15 @@
 node_modules
 
 allure-report
+allure-results
+
+# Compiled TypeScript output (src is TS-only; runs via ts-node)
+src/**/*.js
+src/**/*.js.map
+
+.playwright-mcp
 
 .env
+
+# Log files
+*.log

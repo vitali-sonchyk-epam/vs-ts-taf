@@ -1,19 +1,10 @@
-const moment = require('moment');
-
+const allureReporter = require('@wdio/allure-reporter').default;
 exports.config = {
-  autoCompileOpts: {
-    autoCompile: true,
-    tsNodeOpts: {
-      transpileOnly: true,
-      project: 'tsconfig.json',
-    },
-  },
-
   runner: 'local',
 
   specs: ['./src/tests/**/**.tests.ts'],
   suites: {
-    smoke: ['./src/tests/smoke/**.tests.js'],
+    smoke: ['./src/tests/smoke/**.tests.ts'],
   },
 
   maxInstances: 1,
@@ -24,7 +15,14 @@ exports.config = {
     },
   ],
 
-  logLevel: 'trace',
+  logLevel: 'warn',
+  logLevels: {
+    webdriver: 'warn',
+    devtools: 'warn',
+    '@wdio/local-runner': 'warn',
+    '@wdio/utils': 'warn',
+    taf: 'info',
+  },
 
   bail: 0,
   baseUrl: 'https://cloud.google.com',
@@ -33,29 +31,38 @@ exports.config = {
   connectionRetryTimeout: 90000,
   connectionRetryCount: 3,
 
-  reporters: ['spec', 'allure'],
-  services: ['chromedriver'],
+  reporters: [
+    'spec',
+    [
+      'allure',
+      {
+        outputDir: 'allure-results',
+        disableWebdriverScreenshotsReporting: true,
+      },
+    ],
+  ],
 
   framework: 'mocha',
   mochaOpts: {
-    timeout: 30000,
+    timeout: 120000,
   },
 
-  onPrepare() {
-    console.warn(`Start time: ${moment().format('YYYY-MM-DD HH:mm:ss')}`);
-  },
-
-  async before() {
-    await browser.setWindowSize(1280, 720);
-  },
-
-  async afterTest(_test, _context, { error }) {
-    if (error) {
-      await browser.takeScreenshot();
+  async beforeTest() {
+    if (this._wdioFirstTestDone) {
+      await browser.reloadSession();
     }
+    this._wdioFirstTestDone = true;
+    await browser.maximizeWindow();
   },
 
-  onComplete() {
-    console.warn(`Finish time: ${moment().format('YYYY-MM-DD HH:mm:ss')}`);
-  }
+  async afterTest(test, _context, { error }) {
+    if (error) {
+      const screenshot = await browser.takeScreenshot();
+      allureReporter.addAttachment(
+        `${test.title} (screenshot)`,
+        Buffer.from(screenshot, 'base64'),
+        'image/png',
+      );
+    }
+},
 };
