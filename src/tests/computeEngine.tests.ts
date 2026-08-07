@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { test, expect } from '@playwright/test';
 import { WelcomePage } from '../ui/pages/Welcome.page';
 import { ComputeEnginePage } from '../ui/pages/ComputeEngine.page';
-import { Tags } from '../constants/tags';
+import { Tags } from '../constants/Tags';
 
 test.describe('Compute Engine', () => {
   const usageLimitCases = [

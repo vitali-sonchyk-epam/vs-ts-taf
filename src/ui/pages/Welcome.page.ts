@@ -4,7 +4,7 @@ import { EstimationModal } from '../components/EstimationModal';
 import { Logger } from '../../utils/Logger';
 import { ComputeEnginePage } from './ComputeEngine.page';
 import { CloudSQLPage } from './CloudSQL.page';
-import { blockNames } from '../../constants/blockNames';
+import { BlockNames } from '../../constants/BlockNames';
 
 export class WelcomePage extends BaseCalculatorPage {
   private readonly estimationModal: EstimationModal;
@@ -19,11 +19,11 @@ export class WelcomePage extends BaseCalculatorPage {
   }
 
   openComputeEngine(): Promise<ComputeEnginePage> {
-    return this.openEstimate(blockNames.ComputeEngine, ComputeEnginePage);
+    return this.openEstimate(BlockNames.ComputeEngine, ComputeEnginePage);
   }
 
   openCloudSQL(): Promise<CloudSQLPage> {
-    return this.openEstimate(blockNames.CloudSQL, CloudSQLPage);
+    return this.openEstimate(BlockNames.CloudSQL, CloudSQLPage);
   }
 
   private async openEstimate<T extends BaseCalculatorPage>(
