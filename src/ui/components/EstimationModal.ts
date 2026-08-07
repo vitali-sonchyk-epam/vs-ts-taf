@@ -21,6 +21,6 @@ export class EstimationModal extends BaseComponent {
   }
 
   private getEstimateBlock(label: string): Locator{
-    return this.rootElement.locator('.//div[@role="button"]').filter({ hasText: label });
+    return this.rootElement.locator('//div[@role="button"]').filter({ hasText: label });
   }
 }
