@@ -7,7 +7,7 @@
     "test": "playwright test",
     "test:smoke": "playwright test --grep \"@smoke\"",
     "test:headed": "playwright test --headed",
-    "results:clean": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
+    "report:clean": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
     "report:generate": "allure generate allure-results --clean -o allure-report",
     "report:open": "allure open allure-report",
     "typecheck": "tsc --noEmit"
@@ -23,6 +23,7 @@
     "allure-js-commons": "^3.10.2",
     "allure-playwright": "^3.10.2",
     "dotenv": "^17.4.2",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+     "winston": "^3.19.0"
   }
 }
