@@ -1,9 +1,5 @@
-import { ChainablePromiseElement } from 'webdriverio';
+import { Locator } from '@playwright/test';
 
 export class BaseComponent {
-  constructor(private readonly rootElementLocator: () => ChainablePromiseElement) {}
-
-  protected get rootElement(): ChainablePromiseElement {
-    return this.rootElementLocator();
-  }
+  protected constructor(protected readonly rootElement: Locator) {}
 }
