@@ -4,6 +4,7 @@ import { EstimationModal } from '../components/EstimationModal';
 import { Logger } from '../../utils/Logger';
 import { ComputeEnginePage } from './ComputeEngine.page';
 import { CloudSQLPage } from './CloudSQL.page';
+import { blockNames } from '../../constants/blockNames';
 
 export class WelcomePage extends BaseCalculatorPage {
   private readonly estimationModal: EstimationModal;
@@ -17,18 +18,22 @@ export class WelcomePage extends BaseCalculatorPage {
     this.estimationModal = new EstimationModal(page);
   }
 
-  async openComputeEngine() : Promise<ComputeEnginePage> {
-    Logger.info('Adding a Compute Engine estimate');
-    const modal = await this.clickAddToEstimateButton();
-    await modal.openEstimateBlock("Compute Engine");
-    return new ComputeEnginePage(this.page);
+  openComputeEngine(): Promise<ComputeEnginePage> {
+    return this.openEstimate(blockNames.ComputeEngine, ComputeEnginePage);
   }
 
-  async openCloudSQL() : Promise<CloudSQLPage> {
-    Logger.info('Adding a Cloud SQL estimate');
+  openCloudSQL(): Promise<CloudSQLPage> {
+    return this.openEstimate(blockNames.CloudSQL, CloudSQLPage);
+  }
+
+  private async openEstimate<T extends BaseCalculatorPage>(
+    blockName: string,
+    PageClass: new (page: Page) => T,
+  ): Promise<T> {
+    Logger.info(`Adding a ${blockName} estimate`);
     const modal = await this.clickAddToEstimateButton();
-    await modal.openEstimateBlock("Cloud SQL");
-    return new CloudSQLPage(this.page);
+    await modal.openEstimateBlock(blockName);
+    return new PageClass(this.page);
   }
 
   async clickAddToEstimateButton() {
