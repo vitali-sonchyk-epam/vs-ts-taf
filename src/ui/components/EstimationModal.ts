@@ -6,13 +6,6 @@ export class EstimationModal extends BaseComponent {
   constructor(page: Page) {
     super(page.locator('div[role="dialog"][aria-label="Add to this estimate"]'));
   }
-
-  async waitForDisplayed() {
-    Logger.debug('Waiting for the "Add to this estimate" modal');
-    await expect(this.rootElement).toBeVisible();
-    return this;
-  }
-
   async openEstimateBlock(label: string) {
     Logger.info('Selecting the estimate block: %s', label);
     const estimateBlock = this.getEstimateBlock(label);
