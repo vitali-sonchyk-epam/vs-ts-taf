@@ -6,12 +6,18 @@ node_modules
 allure-report
 allure-results
 
-# Compiled TypeScript output (src is TS-only; runs via ts-node)
+# Playwright artifacts
+test-results
+playwright-report
+blob-report
+.playwright
+
+# Compiled TypeScript output (src is TS-only)
 src/**/*.js
 src/**/*.js.map
 
 .playwright-mcp
-.reviews
+reviews
 
 .env
 

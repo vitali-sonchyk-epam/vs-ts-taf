@@ -1,9 +1,12 @@
-import { ChainablePromiseElement } from 'webdriverio';
+import { Locator, expect } from '@playwright/test';
+import { Logger } from '../../utils/Logger';
 
 export class BaseComponent {
-  constructor(private readonly rootElementLocator: () => ChainablePromiseElement) {}
+  protected constructor(protected readonly rootElement: Locator) {}
 
-  protected get rootElement(): ChainablePromiseElement {
-    return this.rootElementLocator();
-  }
+  async waitForDisplayed() {
+      Logger.debug('Waiting for the "Add to this estimate" modal');
+      await expect(this.rootElement).toBeVisible();
+      return this;
+    }
 }

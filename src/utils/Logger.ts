@@ -1,31 +1,34 @@
-import logger from '@wdio/logger';
-import allureReporter from '@wdio/allure-reporter';
-import { Status } from 'allure-js-commons';
 import { format } from 'node:util';
-
-const log = logger('taf');
+import { logStep, Status } from 'allure-js-commons';
+import { logger, LogLevel } from '../config/logger.config';
 
 export class Logger {
+  private static write(level: LogLevel, message: string, args: unknown[]): string {
+    const formatted = format(message, ...args);
+    logger.log(level, formatted);
+    return formatted;
+  }
+
   static trace(message: string, ...args: unknown[]): void {
-    log.trace(message, ...args);
+    this.write('trace', message, args);
   }
 
   static debug(message: string, ...args: unknown[]): void {
-    log.debug(message, ...args);
+    this.write('debug', message, args);
   }
 
   static info(message: string, ...args: unknown[]): void {
-    log.info(message, ...args);
-    allureReporter.addStep(format(message, ...args));
+    const formatted = this.write('info', message, args);
+    void Promise.resolve(logStep(formatted, Status.PASSED)).catch(() => undefined);
   }
 
   static warn(message: string, ...args: unknown[]): void {
-    log.warn(message, ...args);
-    allureReporter.addStep(format(message, ...args), undefined, Status.BROKEN);
+    const formatted = this.write('warn', message, args);
+    void Promise.resolve(logStep(formatted, Status.BROKEN)).catch(() => undefined);
   }
 
   static error(message: string, ...args: unknown[]): void {
-    log.error(message, ...args);
-    allureReporter.addStep(format(message, ...args), undefined, Status.FAILED);
+    const formatted = this.write('error', message, args);
+    void Promise.resolve(logStep(formatted, Status.FAILED)).catch(() => undefined);
   }
 }
