@@ -2,10 +2,6 @@ import { format } from 'node:util';
 import { logStep, Status } from 'allure-js-commons';
 import { logger, LogLevel } from '../config/logger.config';
 
-// Allure step reporting injects "Allure Metadata (step_start/step_stop)"
-// attachments into Playwright's testInfo during execution. Only emit them
-// when the Allure reporter is actually active, otherwise they clutter the
-// Playwright HTML report.
 const allureEnabled = process.env['REPORTER'] === 'allure';
 
 export class Logger {
