@@ -1,0 +1,10 @@
+node_modules/
+allure-report/
+allure-results/
+test-results/
+playwright-report/
+blob-report/
+package-lock.json
+
+# Markdown files (docs/skills) are excluded from formatting
+**/*.md

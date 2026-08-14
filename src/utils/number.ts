@@ -5,4 +5,3 @@ export function parseNumber(rawValue: string): number {
   }
   return parsedValue;
 }
-

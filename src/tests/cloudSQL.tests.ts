@@ -17,23 +17,22 @@ test.describe('Cloud SQL', () => {
     const welcomePage = new WelcomePage(page);
     await welcomePage.open();
     cloudSQLPage = await welcomePage.openCloudSQL();
-  })
+  });
 
-  usageLimitCases.forEach(usageLimit => {
-    test(`Cloud SQL Total usage limit for ${usageLimit.instances} is ${usageLimit.expectedUsageLimit}`,
+  usageLimitCases.forEach((usageLimit) => {
+    test(
+      `Cloud SQL Total usage limit for ${usageLimit.instances} is ${usageLimit.expectedUsageLimit}`,
       { tag: Tags.Smoke },
       async () => {
         await cloudSQLPage.setNumberOfInstances(usageLimit.instances);
         const actualUsageLimit = await cloudSQLPage.getTotalUsageLimit();
         expect(actualUsageLimit).toEqual(usageLimit.expectedUsageLimit);
-      }
-    )
-  })
+      },
+    );
+  });
 
-   test('Cloud SQL page has appropriate title',
-    { tag: Tags.Extended },
-    async () => {
-      const title = await cloudSQLPage.getTitle();
-      expect(title).toBe('Cloud SQL');
-    })
+  test('Cloud SQL page has appropriate title', { tag: Tags.Extended }, async () => {
+    const title = await cloudSQLPage.getTitle();
+    expect(title).toBe('Cloud SQL');
+  });
 });

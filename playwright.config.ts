@@ -1,5 +1,37 @@
 import 'dotenv/config';
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
+
+// Pick a single reporter based on the REPORTER value from `.env` (defaults to html).
+const reporterKind = process.env['REPORTER'] ?? 'html';
+
+const htmlReporter: ReporterDescription = ['html', { open: 'never' }];
+
+const reportPortalConfig = {
+  apiKey: process.env['RP_API_KEY'] ?? '',
+  endpoint: process.env['RP_ENDPOINT'] ?? 'https://reportportal.epam.com/api/v2',
+  project: process.env['RP_PROJECT'] ?? '',
+  launch: process.env['RP_LAUNCH'] ?? 'vs-ts-taf',
+  attributes: [{ key: 'framework', value: 'playwright' }],
+  includeTestSteps: true,
+};
+
+const reporterByKind: Record<string, ReporterDescription> = {
+  list: ['list'],
+  html: htmlReporter,
+  allure: ['allure-playwright', { resultsDir: 'allure-results' }],
+  junit: [
+    'junit',
+    {
+      outputFile: process.env['JUNIT_OUTPUT_FILE'] ?? 'test-results/junit/results.xml',
+      includeProjectInTestName: true,
+      stripANSIControlSequences: true,
+      embedAnnotationsAsProperties: true,
+    },
+  ],
+  reportportal: ['@reportportal/agent-js-playwright', reportPortalConfig],
+};
+
+const reporter: ReporterDescription = reporterByKind[reporterKind] ?? htmlReporter;
 
 export default defineConfig({
   testDir: './src/tests',
@@ -13,10 +45,7 @@ export default defineConfig({
   fullyParallel: true,
   retries: 0,
 
-  reporter: [
-    ['list'],
-    ['allure-playwright', { resultsDir: 'allure-results' }],
-  ],
+  reporter: [reporter],
 
   use: {
     baseURL: process.env['BASE_URL'] ?? 'https://cloud.google.com',
@@ -25,6 +54,7 @@ export default defineConfig({
     navigationTimeout: 90_000,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
+    video: 'retain-on-failure',
   },
 
   projects: [

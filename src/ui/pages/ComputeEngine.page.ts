@@ -5,11 +5,11 @@ import { CalculatorInput } from '../components/CalculatorInput';
 import { BaseCalculatorPage } from './base/BaseCalculator.page';
 
 export class ComputeEnginePage extends BaseCalculatorPage {
-  private get numberOfInstancesInput(): CalculatorInput{
+  private get numberOfInstancesInput(): CalculatorInput {
     return new CalculatorInput(this.page.locator('div.QiFlid'));
   }
 
-  private get totalUsageLimitInput(): CalculatorInput{
+  private get totalUsageLimitInput(): CalculatorInput {
     return new CalculatorInput(this.page.locator('div.KDALvb'));
   }
 
