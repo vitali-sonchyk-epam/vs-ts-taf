@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { test, expect } from '@playwright/test';
-import { WelcomePage } from '../ui/pages/Welcome.page';
-import { CloudSQLPage } from '../ui/pages/CloudSQL.page';
+import { test, expect } from '../fixtures/testFixture';
 import { Tags } from '../constants/Tags';
+import { EstimationModule } from '../constants/Enums';
+import { cloudSQLFormCases } from '../testData/CloudSQLTestData';
 
 test.describe('Cloud SQL', () => {
   const usageLimitCases = [
@@ -11,28 +11,38 @@ test.describe('Cloud SQL', () => {
     { instances: 5, expectedUsageLimit: 3650 },
   ];
 
-  let cloudSQLPage: CloudSQLPage;
-
-  test.beforeEach(async ({ page }) => {
-    const welcomePage = new WelcomePage(page);
-    await welcomePage.open();
-    cloudSQLPage = await welcomePage.openCloudSQL();
+  test.beforeEach(async ({ welcomeSteps }) => {
+    await welcomeSteps.openAndNavigateToModel(EstimationModule.CloudSQL);
   });
 
   usageLimitCases.forEach((usageLimit) => {
     test(
       `Cloud SQL Total usage limit for ${usageLimit.instances} is ${usageLimit.expectedUsageLimit}`,
       { tag: Tags.Smoke },
-      async () => {
-        await cloudSQLPage.setNumberOfInstances(usageLimit.instances);
-        const actualUsageLimit = await cloudSQLPage.getTotalUsageLimit();
+      async ({ cloudSQLSteps }) => {
+        const actualUsageLimit = await cloudSQLSteps.getTotalUsageLimit(usageLimit.instances);
         expect(actualUsageLimit).toEqual(usageLimit.expectedUsageLimit);
       },
     );
   });
 
-  test('Cloud SQL page has appropriate title', { tag: Tags.Extended }, async () => {
-    const title = await cloudSQLPage.getTitle();
-    expect(title).toBe('Cloud SQL');
+  cloudSQLFormCases.forEach((formCase) => {
+    test(
+      `Cloud SQL cost for case: ${formCase.name}`,
+      { tag: Tags.Smoke },
+      async ({ cloudSQLSteps }) => {
+        await cloudSQLSteps.fillForm(formCase.model);
+        await expect.poll(() => cloudSQLSteps.getComputedCost()).toEqual(formCase.expectedCost);
+      },
+    );
   });
+
+  test(
+    'Cloud SQL page has appropriate title',
+    { tag: Tags.Extended },
+    async ({ cloudSQLSteps }) => {
+      const title = await cloudSQLSteps.getTitle();
+      expect(title).toBe('Cloud SQL');
+    },
+  );
 });
