@@ -15,20 +15,17 @@ export class KubernetesEngineSteps extends BaseCalculationSteps<
   async fillForm(model: KubernetesEngineModel): Promise<void> {
     Logger.info('Filling Kubernetes Engine form');
 
-    if (model.machineFamily != undefined)
-      await this.page.machineFamilyDropDown.setValue(model.machineFamily);
-
-    if (model.series != undefined) await this.page.seriesDropDown.setValue(model.series);
-
-    if (model.machineType != undefined) await this.setMachineType(model.machineType);
-
-    if (model.numberOfNodes != undefined) await this.setNumberOfInstances(model.numberOfNodes);
+    if (model.machineFamily)
+      await this.page.machineFamilyDropDown.selectOption(model.machineFamily);
+    if (model.series) await this.page.seriesDropDown.selectOption(model.series);
+    if (model.machineType) await this.setMachineType(model.machineType);
+    if (model.numberOfNodes) await this.setNumberOfInstances(model.numberOfNodes);
   }
 
   private async setMachineType(machineType: string): Promise<void> {
     Logger.info(`Setting machine type: ${machineType}`);
     await expect(async () => {
-      await this.page.machineTypeDropDown.setValue(machineType);
+      await this.page.machineTypeDropDown.selectOption(machineType);
       await expect(this.page.machineTypeLabel).toHaveText(machineType);
     }).toPass({ timeout: 15_000 });
   }

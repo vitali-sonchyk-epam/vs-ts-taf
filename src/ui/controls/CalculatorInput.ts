@@ -1,7 +1,7 @@
 import { Locator } from '@playwright/test';
-import { BaseControl } from './BaseControl';
+import { BaseElement } from '../BaseElement';
 
-export class CalculatorInput extends BaseControl {
+export class CalculatorInput extends BaseElement {
   constructor(rootElement: Locator) {
     super(rootElement);
   }

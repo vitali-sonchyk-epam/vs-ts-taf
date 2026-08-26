@@ -1,7 +1,7 @@
 import { Locator } from '@playwright/test';
-import { BaseControl } from './BaseControl';
+import { BaseElement } from '../BaseElement';
 
-export class DropDown extends BaseControl {
+export class DropDown extends BaseElement {
   private get labelLocator(): Locator {
     return this.rootElement.locator('span[class *= "haAclf"]');
   }
@@ -18,16 +18,19 @@ export class DropDown extends BaseControl {
     super(rootElement);
   }
 
+  private getOptionByValue(value: string): Locator {
+    return this.rootElement.locator(`ul[role = "listbox"] li[data-value = "${value}"]`);
+  }
+
   async getValue(): Promise<string> {
     return await this.labelLocator.innerText();
   }
-  async setValue(value: string): Promise<void> {
+
+  async selectOption(value: string): Promise<void> {
     await this.expanderLocator.click();
-    const optionByValue = this.rootElement.locator(
-      `ul[role = "listbox"] li[data-value = "${value}"]`,
-    );
-    if ((await optionByValue.count()) > 0) {
-      await optionByValue.first().click();
+    const option = this.getOptionByValue(value);
+    if ((await option.count()) > 0) {
+      await option.first().click();
       return;
     }
     await this.allOptions.filter({ visible: true, hasText: value }).click();

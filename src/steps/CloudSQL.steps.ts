@@ -16,10 +16,7 @@ export class CloudSQLSteps extends BaseCalculationSteps<CloudSQLModel, CloudSQLP
   async fillForm(model: CloudSQLModel): Promise<void> {
     Logger.info('Filling cloud SQL form');
 
-    if (model.serviceType != undefined)
-      await this.page.serviceTypeDropDown.setValue(model.serviceType);
-
-    if (model.numberOfInstances != undefined)
-      await this.setNumberOfInstances(model.numberOfInstances);
+    if (model.serviceType) await this.page.serviceTypeDropDown.selectOption(model.serviceType);
+    if (model.numberOfInstances) await this.setNumberOfInstances(model.numberOfInstances);
   }
 }

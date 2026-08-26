@@ -26,26 +26,19 @@ export class ComputeEngineSteps extends BaseCalculationSteps<
   async fillForm(model: ComputeEngineModel): Promise<void> {
     Logger.info(`Filling compute engine form`);
 
-    if (model.provisioningType != undefined)
-      await this.setProvisioningModel(model.provisioningType);
-
-    if (model.machineFamily != undefined)
-      await this.page.machineFamilyDropDown.setValue(model.machineFamily);
-
-    if (model.series != undefined) await this.page.seriesDropDown.setValue(model.series);
-
-    if (model.machineType != undefined) await this.setMachineType(model.machineType);
-
-    if (model.region != undefined) await this.page.regionDropDown.setValue(model.region);
-
-    if (model.numberOfInstances != undefined)
-      await this.setNumberOfInstances(model.numberOfInstances);
+    if (model.provisioningType) await this.setProvisioningModel(model.provisioningType);
+    if (model.machineFamily)
+      await this.page.machineFamilyDropDown.selectOption(model.machineFamily);
+    if (model.series) await this.page.seriesDropDown.selectOption(model.series);
+    if (model.machineType) await this.setMachineType(model.machineType);
+    if (model.region) await this.page.regionDropDown.selectOption(model.region);
+    if (model.numberOfInstances) await this.setNumberOfInstances(model.numberOfInstances);
   }
 
   private async setMachineType(machineType: string): Promise<void> {
     Logger.info(`Setting machine type: ${machineType}`);
     await expect(async () => {
-      await this.page.machineTypeDropDown.setValue(machineType);
+      await this.page.machineTypeDropDown.selectOption(machineType);
       await expect(this.page.machineTypeLabel).toHaveText(machineType);
     }).toPass({ timeout: 15_000 });
   }
