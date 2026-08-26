@@ -1,6 +1,6 @@
 # vs-ts-taf — Playwright + TypeScript Test Automation Framework
 
-End-to-end UI test automation for the [Google Cloud Pricing Calculator](https://cloud.google.com/products/calculator), built with **Playwright**, **TypeScript**, and the Page Object Model.
+End-to-end UI test automation for the [Google Cloud Pricing Calculator](https://cloud.google.com/products/calculator), built with **Playwright**, **TypeScript**, and a layered Page Object / Steps architecture: page objects expose element getters, while step classes drive all interaction and orchestration and are injected into tests through Playwright fixtures.
 
 > **Disclaimer**
 > This is an educational project. Do not consider the current solutions as the only correct ones or as production-ready.
@@ -58,6 +58,9 @@ npx playwright test -g "Total usage limit for 1"
 
 # Run only the Cloud SQL suite
 npx playwright test src/tests/cloudSQL.tests.ts
+
+# Run only the Kubernetes Engine suite
+npx playwright test src/tests/kubernetesEngine.tests.ts
 
 # Open the interactive UI mode
 npx playwright test --ui
@@ -117,29 +120,54 @@ npm run pwreport:clean
 ```
 src/
   config/
-    logger.config.ts          # Winston logger instance (level from LOG_LEVEL)
+    logger.config.ts             # Winston logger instance (level from LOG_LEVEL)
+  context/
+    PageContext.ts               # Holds the active Playwright Page for the current test
+  fixtures/
+    testFixture.ts               # Extends base test with step fixtures + auto page binding
   ui/
+    BaseElement.ts               # Base element wrapper (root Locator, waitForDisplayed)
     pages/
       base/
-        Base.page.ts           # Shared page behaviour (open, cookies, waitForPageUrl)
-        BaseCalculator.page.ts # Shared calculator-page behaviour (getTitle via PageHeader)
-      Welcome.page.ts          # Calculator landing page (opens the estimate modal)
-      ComputeEngine.page.ts    # Compute Engine estimate form
-      CloudSQL.page.ts         # Cloud SQL estimate form
-    components/                # Reusable UI components
-      BaseComponent.ts         # Base component holding the root Locator
-      EstimationModal.ts       # "Add to this estimate" modal
-      CalculatorInput.ts       # Numeric input control used by calculator forms
-      PageHeader.ts            # Page title (<h1>) component
+        Base.page.ts             # Shared page behaviour (open, cookies, waitForPageUrl)
+        BaseCalculator.page.ts   # Shared calculator-page element getters
+      Welcome.page.ts            # Calculator landing page (estimate modal + button getters)
+      ComputeEngine.page.ts      # Compute Engine form element getters
+      CloudSQL.page.ts           # Cloud SQL form element getters
+      KubernetesEngine.page.ts   # Kubernetes Engine form element getters
+    components/                  # Reusable read-oriented UI components
+      BaseComponent.ts           # Base component (extends BaseElement)
+      EstimationModal.ts         # "Add to this estimate" modal
+      CostDetailsPanel.ts        # Estimated cost panel
+      PageHeader.ts              # Page title (<h1>) component
+    controls/                    # Interactive input controls
+      BaseControl.ts             # Base control (getValue/setValue contract)
+      CalculatorInput.ts         # Numeric input control used by calculator forms
+      DropDown.ts                # Dropdown selection control
+  steps/                         # Actions/orchestration on top of page objects
+    base/
+      BaseCalculation.steps.ts   # Shared calculator step actions (generic base)
+    Welcome.steps.ts             # Navigation to an estimate module
+    ComputeEngine.steps.ts       # Compute Engine form actions
+    CloudSQL.steps.ts            # Cloud SQL form actions
+    KubernetesEngine.steps.ts    # Kubernetes Engine form actions
+    models/                      # Form input models
+    builders/                    # Fluent builders for the models
+  testData/
+    ComputeEngineTestData.ts     # Compute Engine data-driven cases
+    CloudSQLTestData.ts          # Cloud SQL data-driven cases
+    KubernetesEngineTestData.ts  # Kubernetes Engine data-driven cases
   constants/
-    Tags.ts                    # Shared test tags (@smoke, @extended)
-    BlockNames.ts               # Shared estimate block names (Compute Engine, Cloud SQL)
+    Tags.ts                      # Shared test tags (@smoke, @extended)
+    BlockNames.ts                # Estimate block names
+    Enums.ts                     # ProvisioningType, CloudSQLServiceType, EstimationModule
   utils/
-    Logger.ts                  # Static logger; also emits Allure steps when REPORTER=allure
-    number.ts                  # parseNumber helper
+    Logger.ts                    # Static logger; also emits Allure steps when REPORTER=allure
+    number.ts                    # parseNumber helper
   tests/
-    computeEngine.tests.ts     # Data-driven Compute Engine tests
-    cloudSQL.tests.ts          # Data-driven Cloud SQL tests
+    computeEngine.tests.ts       # Data-driven Compute Engine tests
+    cloudSQL.tests.ts            # Data-driven Cloud SQL tests
+    kubernetesEngine.tests.ts    # Data-driven Kubernetes Engine tests
 playwright.config.ts     # Playwright runner configuration
 eslint.config.mjs        # ESLint flat config
 tsconfig.json            # TypeScript compiler options
@@ -147,10 +175,12 @@ tsconfig.json            # TypeScript compiler options
 
 ## Conventions
 
-- **Page objects / components** — `PascalCase` filenames matching the exported class; pages use the `.page.ts` suffix.
+- **Page objects / components** — `PascalCase` filenames matching the exported class; pages use the `.page.ts` suffix and step classes the `.steps.ts` suffix.
 - **Spec files** — camelCase with the `.tests.ts` suffix (matched by `testMatch` in `playwright.config.ts`).
 - **Utilities** — lowercase filenames (no default class export).
-- **Element access** — page objects and components receive the Playwright `Page` and expose `Locator` getters; locators are lazy by design and resolved only when actions run.
+- **Pages vs. Steps** — page objects expose only element/component getters; all interaction (filling forms, clicking, reading values) lives in step classes under `src/steps`, with shared actions in `BaseCalculationSteps`.
+- **Fixtures & page context** — step classes are provided to tests via fixtures in `src/fixtures/testFixture.ts`; an auto `bindPage` fixture stores the active `Page` in `PageContext` so page objects can resolve it without constructor plumbing.
+- **Element access** — page objects expose `Locator`/control getters that are lazy by design and resolved only when step actions run.
 - **Assertions** — prefer Playwright's web-first `expect` matchers (`toBeVisible`, `toHaveURL`, ...) which auto-wait/poll up to the configured `expect.timeout`.
 - **Logging** — use `Logger` (`src/utils/Logger.ts`) instead of `console.*`; it writes to the console via `winston` and, only when `REPORTER=allure`, also emits Allure steps.
 

@@ -1,12 +1,8 @@
-import { Locator, expect } from '@playwright/test';
-import { Logger } from '../../utils/Logger';
+import { Locator } from '@playwright/test';
+import { BaseElement } from '../BaseElement';
 
-export class BaseComponent {
-  protected constructor(protected readonly rootElement: Locator) {}
-
-  async waitForDisplayed() {
-    Logger.debug('Waiting for the "Add to this estimate" modal');
-    await expect(this.rootElement).toBeVisible();
-    return this;
+export class BaseComponent extends BaseElement {
+  protected constructor(rootElement: Locator) {
+    super(rootElement);
   }
 }

@@ -1,45 +1,17 @@
-import { Page, expect } from '@playwright/test';
+import { Locator } from '@playwright/test';
 import { BaseCalculatorPage } from './base/BaseCalculator.page';
 import { EstimationModal } from '../components/EstimationModal';
-import { Logger } from '../../utils/Logger';
-import { ComputeEnginePage } from './ComputeEngine.page';
-import { CloudSQLPage } from './CloudSQL.page';
-import { BlockNames } from '../../constants/BlockNames';
 
 export class WelcomePage extends BaseCalculatorPage {
-  private readonly estimationModal: EstimationModal;
+  get estimationModal(): EstimationModal {
+    return new EstimationModal(this.page);
+  }
 
-  private get addToEstimateButton() {
+  get addToEstimateButton(): Locator {
     return this.page.locator('.Gxwdcd button');
   }
 
-  constructor(page: Page) {
-    super(page, '/products/calculator');
-    this.estimationModal = new EstimationModal(page);
-  }
-
-  openComputeEngine(): Promise<ComputeEnginePage> {
-    return this.openEstimate(BlockNames.ComputeEngine, ComputeEnginePage);
-  }
-
-  openCloudSQL(): Promise<CloudSQLPage> {
-    return this.openEstimate(BlockNames.CloudSQL, CloudSQLPage);
-  }
-
-  private async openEstimate<T extends BaseCalculatorPage>(
-    blockName: string,
-    PageClass: new (page: Page) => T,
-  ): Promise<T> {
-    Logger.info(`Adding a ${blockName} estimate`);
-    const modal = await this.clickAddToEstimateButton();
-    await modal.openEstimateBlock(blockName);
-    return new PageClass(this.page);
-  }
-
-  async clickAddToEstimateButton() {
-    Logger.info('Clicking "Add to estimate" button');
-    await expect(this.addToEstimateButton).toBeVisible();
-    await this.addToEstimateButton.click();
-    return await this.estimationModal.waitForDisplayed();
+  constructor() {
+    super('/products/calculator');
   }
 }
