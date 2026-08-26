@@ -17,24 +17,22 @@ test.describe('Compute Engine', () => {
     const welcomePage = new WelcomePage(page);
     await welcomePage.open();
     computeEnginePage = await welcomePage.openComputeEngine();
-  })
+  });
 
-  usageLimitCases.forEach(usageLimit => {
-    test(`Compute Engine Total usage limit for ${usageLimit.instances} is ${usageLimit.expectedUsageLimit}`,
+  usageLimitCases.forEach((usageLimit) => {
+    test(
+      `Compute Engine Total usage limit for ${usageLimit.instances} is ${usageLimit.expectedUsageLimit}`,
       { tag: Tags.Smoke },
       async () => {
         await computeEnginePage.setNumberOfInstances(usageLimit.instances);
         const actualUsageLimit = await computeEnginePage.getTotalUsageLimit();
         expect(actualUsageLimit).toEqual(usageLimit.expectedUsageLimit);
-      }
-    )
-  })
+      },
+    );
+  });
 
-  test('Compute Engine page has appropriate title',
-    { tag: Tags.Extended },
-    async () => {
-      const title = await computeEnginePage.getTitle();
-      expect(title).toBe('Compute Engine');
-    }
-  )
+  test('Compute Engine page has appropriate title', { tag: Tags.Extended }, async () => {
+    const title = await computeEnginePage.getTitle();
+    expect(title).toBe('Compute Engine');
+  });
 });

@@ -13,7 +13,7 @@ export class EstimationModal extends BaseComponent {
     await expect(this.rootElement).toBeHidden();
   }
 
-  private getEstimateBlock(label: string): Locator{
+  private getEstimateBlock(label: string): Locator {
     return this.rootElement.locator('//div[@role="button"]').filter({ hasText: label });
   }
 }

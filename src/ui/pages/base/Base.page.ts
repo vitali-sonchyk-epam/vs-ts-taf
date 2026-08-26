@@ -2,7 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { Logger } from '../../../utils/Logger';
 
 export abstract class BasePage {
-    private get cookiesConfirmationButton() {
+  private get cookiesConfirmationButton() {
     return this.page.locator('button.glue-cookie-notification-bar__accept');
   }
 

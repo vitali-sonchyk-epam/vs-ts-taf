@@ -14,10 +14,7 @@ export const logger = winston.createLogger({
   level: (process.env['LOG_LEVEL'] as LogLevel) ?? 'debug',
   levels,
   format: winston.format.printf(
-    ({ level, message }) =>
-      `${new Date().toISOString()} ${level.toUpperCase()} taf: ${message}`,
+    ({ level, message }) => `${new Date().toISOString()} ${level.toUpperCase()} taf: ${message}`,
   ),
-  transports: [
-    new winston.transports.Console({ stderrLevels: ['error', 'warn'] }),
-  ],
+  transports: [new winston.transports.Console({ stderrLevels: ['error', 'warn'] })],
 });

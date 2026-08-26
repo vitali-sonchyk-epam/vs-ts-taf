@@ -12,7 +12,9 @@ End-to-end UI test automation for the [Google Cloud Pricing Calculator](https://
 | Test runner | Playwright Test (`@playwright/test`) |
 | Language | TypeScript |
 | Assertions | Playwright's built-in `expect` (auto-retrying web-first assertions) |
-| Reporting | Built-in `list` reporter + Allure (`allure-playwright`) |
+| Reporting | Configurable via `REPORTER` env var — see [Reporting](#reporting) below |
+| Logging | `winston`, with optional Allure step reporting (`allure-js-commons`) when `REPORTER=allure` |
+| Linting/formatting | ESLint (flat config, `typescript-eslint` + `eslint-plugin-playwright`) and Prettier |
 | Config/env | `dotenv` |
 
 ## Prerequisites
@@ -29,8 +31,8 @@ npm install
 # 2. Install Playwright browsers
 npx playwright install
 
-# 3. (Optional) create a .env file for environment-specific values
-#    e.g. BASE_URL overrides, credentials, etc.
+# 3. Create your local .env from the template and adjust values
+copy .env.example .env
 
 # 4. Run the tests
 npm test
@@ -61,34 +63,61 @@ npx playwright test src/tests/cloudSQL.tests.ts
 npx playwright test --ui
 ```
 
-## Reporting (Allure)
-
-Allure results are written to `allure-results/` during a run.
+## Linting and formatting
 
 ```powershell
-# Generate a static HTML report from the latest results
-npm run report:generate
+# Check for lint errors
+npm run lint
 
-# Open the generated static report
-npm run report:open
+# Auto-fix lint issues where possible
+npm run lint:fix
 
-# Or serve an interactive report directly from the raw results
-npx allure serve allure-results
+# Check formatting without writing changes
+npm run format:check
 
-# Clean out old results before a fresh run
-npm run results:clean
+# Reformat the codebase with Prettier
+npm run format
+
+# Type-check without emitting output
+npm run typecheck
 ```
 
-Playwright's own HTML report is also available:
+## Reporting
+
+The active reporter is chosen at runtime by the `REPORTER` environment variable (see `.env.example`); only one reporter runs per invocation:
+
+| `REPORTER` value | What it produces |
+| --- | --- |
+| `html` (default) | Playwright's built-in HTML report, including trace/screenshot/video for failed tests |
+| `list` | Plain console output only |
+| `allure` | Allure results in `allure-results/`, plus Allure step logs from `Logger` |
+| `junit` | A JUnit XML file (`test-results/junit/results.xml` by default, or `JUNIT_OUTPUT_FILE`) |
+| `reportportal` | Uploads the run to Report Portal, using the `RP_*` variables from `.env` |
 
 ```powershell
-npx playwright show-report
+# View the Playwright HTML report (after a REPORTER=html run)
+npm run html:report
+
+# Generate a static Allure report from the latest allure-results (after a REPORTER=allure run)
+npm run report:generate
+
+# Open the generated static Allure report
+npm run report:open
+
+# Or serve an interactive Allure report directly from the raw results
+npx allure serve allure-results
+
+# Clean out old Allure results / Playwright HTML report before a fresh run
+npm run report:clean
+npm run pwreport:clean
 ```
 
 ## Project structure
 
 ```
 src/
+  config/
+    logger.config.ts          # Winston logger instance (level from LOG_LEVEL)
   ui/
     pages/
       base/
@@ -103,14 +132,16 @@ src/
       CalculatorInput.ts       # Numeric input control used by calculator forms
       PageHeader.ts            # Page title (<h1>) component
   constants/
-    tags.ts                    # Shared test tags (@smoke, @extended)
+    Tags.ts                    # Shared test tags (@smoke, @extended)
+    BlockNames.ts               # Shared estimate block names (Compute Engine, Cloud SQL)
   utils/
-    Logger.ts                  # Static logger that also emits Allure steps ("taf" namespace)
+    Logger.ts                  # Static logger; also emits Allure steps when REPORTER=allure
     number.ts                  # parseNumber helper
   tests/
     computeEngine.tests.ts     # Data-driven Compute Engine tests
     cloudSQL.tests.ts          # Data-driven Cloud SQL tests
 playwright.config.ts     # Playwright runner configuration
+eslint.config.mjs        # ESLint flat config
 tsconfig.json            # TypeScript compiler options
 ```
 
@@ -121,10 +152,13 @@ tsconfig.json            # TypeScript compiler options
 - **Utilities** — lowercase filenames (no default class export).
 - **Element access** — page objects and components receive the Playwright `Page` and expose `Locator` getters; locators are lazy by design and resolved only when actions run.
 - **Assertions** — prefer Playwright's web-first `expect` matchers (`toBeVisible`, `toHaveURL`, ...) which auto-wait/poll up to the configured `expect.timeout`.
+- **Logging** — use `Logger` (`src/utils/Logger.ts`) instead of `console.*`; it writes to the console via `winston` and, only when `REPORTER=allure`, also emits Allure steps.
 
 ## Configuration notes
 
 - `baseURL` is set to `https://cloud.google.com` in `playwright.config.ts` and can be overridden via the `BASE_URL` environment variable (loaded from `.env`).
 - Tests run against Chromium by default (`projects` in `playwright.config.ts`). Add more projects (Firefox, WebKit) as needed.
-- Screenshots are captured on failure and traces are retained on failure (`use.screenshot` / `use.trace`).
+- Screenshots are captured on failure, and traces and video are retained on failure (`use.screenshot` / `use.trace` / `use.video`).
 - Timeouts: global test timeout `120s`, action/expect timeouts `10s`, navigation timeout `90s`.
+- `LOG_LEVEL` (`trace` | `debug` | `info` | `warn` | `error`) controls `Logger`/`winston` verbosity; defaults to `debug`.
+- `REPORTER` selects the active reporter (see [Reporting](#reporting)); `RP_ENDPOINT`, `RP_PROJECT`, `RP_API_KEY`, and `RP_LAUNCH` configure the Report Portal integration when `REPORTER=reportportal`.

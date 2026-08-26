@@ -2,11 +2,19 @@ import { format } from 'node:util';
 import { logStep, Status } from 'allure-js-commons';
 import { logger, LogLevel } from '../config/logger.config';
 
+const allureEnabled = process.env['REPORTER'] === 'allure';
+
 export class Logger {
   private static write(level: LogLevel, message: string, args: unknown[]): string {
     const formatted = format(message, ...args);
     logger.log(level, formatted);
     return formatted;
+  }
+
+  private static reportStep(message: string, status: Status): void {
+    if (allureEnabled) {
+      void Promise.resolve(logStep(message, status)).catch(() => undefined);
+    }
   }
 
   static trace(message: string, ...args: unknown[]): void {
@@ -19,16 +27,16 @@ export class Logger {
 
   static info(message: string, ...args: unknown[]): void {
     const formatted = this.write('info', message, args);
-    void Promise.resolve(logStep(formatted, Status.PASSED)).catch(() => undefined);
+    this.reportStep(formatted, Status.PASSED);
   }
 
   static warn(message: string, ...args: unknown[]): void {
     const formatted = this.write('warn', message, args);
-    void Promise.resolve(logStep(formatted, Status.BROKEN)).catch(() => undefined);
+    this.reportStep(formatted, Status.BROKEN);
   }
 
   static error(message: string, ...args: unknown[]): void {
     const formatted = this.write('error', message, args);
-    void Promise.resolve(logStep(formatted, Status.FAILED)).catch(() => undefined);
+    this.reportStep(formatted, Status.FAILED);
   }
 }
