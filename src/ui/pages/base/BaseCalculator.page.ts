@@ -1,17 +1,42 @@
 import { BasePage } from './Base.page';
 import { PageHeader } from '../../components/PageHeader';
-import { Page } from '@playwright/test';
+import { CalculatorInput } from '../../controls/CalculatorInput';
+import { CostDetailsPanel } from '../../components/CostDetailsPanel';
 
 export class BaseCalculatorPage extends BasePage {
-  private get pageHeader(): PageHeader {
-    return new PageHeader(this.page.locator('div.xJ0wqe'));
+  private get pageHeaderLocator() {
+    return this.page.locator('div.xJ0wqe');
   }
 
-  constructor(page: Page, path: string) {
-    super(page, path);
+  get pageHeader(): PageHeader {
+    return new PageHeader(this.pageHeaderLocator);
   }
 
-  async getTitle(): Promise<string> {
-    return await this.pageHeader.getTitle();
+  private get numberOfInstancesInputLocator() {
+    return this.page.locator('div.QiFlid');
+  }
+
+  get numberOfInstancesInput(): CalculatorInput {
+    return new CalculatorInput(this.numberOfInstancesInputLocator);
+  }
+
+  private get totalUsageLimitInputLocator() {
+    return this.page.locator('div.KDALvb');
+  }
+
+  get totalUsageLimitInput(): CalculatorInput {
+    return new CalculatorInput(this.totalUsageLimitInputLocator);
+  }
+
+  private get costDetailsPanelLocator() {
+    return this.page.locator('div.uMSQA');
+  }
+
+  get costDetailsPanel(): CostDetailsPanel {
+    return new CostDetailsPanel(this.costDetailsPanelLocator);
+  }
+
+  constructor(path: string) {
+    super(path);
   }
 }
