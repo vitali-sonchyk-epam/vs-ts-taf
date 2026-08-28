@@ -29,7 +29,7 @@ export const computeEngineFormCases: ComputeEngineFormCase[] = [
       .withProvisioningModel(ProvisioningType.Spot)
       .withNumberOfInstances(3)
       .build(),
-    expectedCost: '$51.83',
+    expectedCost: '$56.70',
   },
   {
     name: 'Regular N1 n1-standard-2 in us-central1',
@@ -51,6 +51,6 @@ export const computeEngineFormCases: ComputeEngineFormCase[] = [
       .withProvisioningModel(ProvisioningType.Spot)
       .withNumberOfInstances(2)
       .build(),
-    expectedCost: '$67.10',
+    expectedCost: '$73.60',
   },
 ];
