@@ -207,9 +207,12 @@ tsconfig.json            # TypeScript compiler options
 ## Configuration notes
 
 - `baseURL` is set to `https://cloud.google.com` in `playwright.config.ts` and can be overridden via the `BASE_URL` environment variable (loaded from `.env`).
-- Tests are discovered from `src/tests` via `testMatch: ['**/*.tests.ts']` and run in the single `cloud-calculator` project (Chromium, `channel: 'chrome'`), fully parallel with no retries.
-- Screenshot baselines are stored as `screenshots/{testFilePath}/{arg}.webp` with a `maxDiffPixels: 100` tolerance.
-- Failed tests retain a screenshot, trace, and video under `test-results/`.
+- Tests are discovered from `src/tests` via `testMatch: ['**/*.tests.ts']` and run in the single `cloud-calculator` project, fully parallel with no retries.
+- The project runs real Google Chrome (`browserName: 'chromium'` with `channel: 'chrome'`) at a fixed `1920x1080` viewport and `deviceScaleFactor: 1`, so screenshot baselines are reproducible across machines and in both headed and headless runs. Add more projects (Firefox, WebKit) as needed.
+- Screenshot baselines are stored as `screenshots/{testFilePath}/{arg}.webp` with a `maxDiffPixels: 100` tolerance. Regenerate them with `npx playwright test src/tests/screenShots.tests.ts --update-snapshots` and commit the result.
+- Screenshots are captured on failure, and traces and video are retained on failure (`use.screenshot` / `use.trace` / `use.video`), under `test-results/`.
+- Timeouts: global test timeout `120s`, action/expect timeouts `10s`, navigation timeout `90s`.
+- `LOG_LEVEL` (`trace` | `debug` | `info` | `warn` | `error`) controls `Logger`/`winston` verbosity; defaults to `debug`.
 
 Environment variables (see `.env.example` and `src/types/env.d.ts`):
 
@@ -222,10 +225,6 @@ Environment variables (see `.env.example` and `src/types/env.d.ts`):
 | `JUNIT_OUTPUT_FILE` | Output path for the JUnit reporter |
 | `RP_ENDPOINT`, `RP_PROJECT`, `RP_API_KEY`, `RP_LAUNCH` | Report Portal connection settings |
 | `DOWNLOAD_PATH` | Directory where downloaded artifacts are saved (default `./downloads`) |
-- Tests run against Chromium by default (`projects` in `playwright.config.ts`). Add more projects (Firefox, WebKit) as needed.
-- Screenshots are captured on failure, and traces and video are retained on failure (`use.screenshot` / `use.trace` / `use.video`).
-- Timeouts: global test timeout `120s`, action/expect timeouts `10s`, navigation timeout `90s`.
-- `LOG_LEVEL` (`trace` | `debug` | `info` | `warn` | `error`) controls `Logger`/`winston` verbosity; defaults to `debug`.
 - `REPORTER` selects the active reporter (see [Reporting](#reporting)); `RP_ENDPOINT`, `RP_PROJECT`, `RP_API_KEY`, and `RP_LAUNCH` configure the Report Portal integration when `REPORTER=reportportal`.
 - `DOWNLOAD_PATH` sets the directory used for downloaded test artifacts (e.g. cost report CSVs fetched via `downloadFixture`'s `downloads` fixture).
 

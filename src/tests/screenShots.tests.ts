@@ -3,7 +3,7 @@ import { Tags } from '../constants/Tags';
 import { PageContext } from '../context/PageContext';
 import { EstimationModule } from '../constants/Enums';
 
-test.describe(`Screenshots tests`, () => {
+test.describe('Screenshots tests', () => {
   test('Welcome page', { tag: Tags.Sanity }, async ({ welcomeSteps }) => {
     await welcomeSteps.open();
     await expect(PageContext.get()).toHaveScreenshot();

@@ -57,9 +57,6 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
     video: 'retain-on-failure',
-    launchOptions: {
-      args: ['--start-maximized'],
-    },
   },
 
   projects: [
@@ -68,7 +65,8 @@ export default defineConfig({
       use: {
         browserName: 'chromium',
         channel: 'chrome',
-        viewport: null,
+        viewport: { width: 1920, height: 1080 },
+        deviceScaleFactor: 1,
       },
     },
   ],
