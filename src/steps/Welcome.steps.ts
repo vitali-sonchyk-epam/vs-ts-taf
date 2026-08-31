@@ -17,6 +17,10 @@ export class WelcomeSteps {
     this.welcomePage = new WelcomePage();
   }
 
+  async open() {
+    await this.welcomePage.open();
+  }
+
   async openAndNavigateToModel(estimationModule: EstimationModule) {
     const blockName = blockNameByModule[estimationModule];
     await this.welcomePage.open();
