@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
+import { defineConfig, type ReporterDescription } from '@playwright/test';
 
 // Pick a single reporter based on the REPORTER value from `.env` (defaults to html).
 const reporterKind = process.env['REPORTER'] ?? 'html';
@@ -35,11 +35,13 @@ const reporter: ReporterDescription = reporterByKind[reporterKind] ?? htmlReport
 
 export default defineConfig({
   testDir: './src/tests',
-  testMatch: '**/*.tests.ts',
+  testMatch: ['**/*.tests.ts'],
+  snapshotPathTemplate: './screenshots/{testFilePath}/{arg}.webp',
 
   timeout: 120_000,
   expect: {
     timeout: 10_000,
+    toHaveScreenshot: { maxDiffPixels: 100 },
   },
 
   fullyParallel: true,
@@ -61,7 +63,8 @@ export default defineConfig({
     {
       name: 'cloud-calculator',
       use: {
-        ...devices['Desktop Chrome'],
+        browserName: 'chromium',
+        channel: 'chrome',
         viewport: { width: 1920, height: 1080 },
       },
     },
