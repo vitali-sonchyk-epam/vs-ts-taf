@@ -20,7 +20,7 @@ export class ComputeEnginePage extends BaseCalculatorPage {
   }
 
   get regionDropDown(): DropDown {
-    return new DropDown(this.page.locator('div[jsName = "U7okFc"]'));
+    return new DropDown(this.page.locator('div[jsName = "U7okFc"]:has([aria-label = "Region"])'));
   }
 
   get numberOfCPUInput(): Locator {

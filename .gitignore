@@ -12,6 +12,9 @@ playwright-report
 blob-report
 .playwright
 
+# Downloaded files saved during tests
+downloads
+
 # Compiled TypeScript output (src is TS-only)
 src/**/*.js
 src/**/*.js.map

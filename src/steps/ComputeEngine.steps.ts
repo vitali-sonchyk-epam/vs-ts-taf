@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { ProvisioningType } from '../constants/Enums';
 import { ComputeEnginePage } from '../ui/pages/ComputeEngine.page';
 import { Logger } from '../utils/Logger';
+import { parseNumber } from '../utils/number';
 import { ComputeEngineModel } from './models/ComputeEngineModel';
 import { BaseCalculationSteps } from './base/BaseCalculation.steps';
 
@@ -21,6 +22,27 @@ export class ComputeEngineSteps extends BaseCalculationSteps<
   async setProvisioningModel(provisioningType: ProvisioningType): Promise<void> {
     Logger.info('Setting provisioning model to %s', provisioningType);
     await this.page.provisioningModelContainers.filter({ hasText: provisioningType }).click();
+  }
+
+  async getProvisioningModel(): Promise<ProvisioningType | undefined> {
+    for (const provisioningType of Object.values(ProvisioningType)) {
+      const container = this.page.provisioningModelContainers.filter({ hasText: provisioningType });
+      if (await container.locator('input:checked').count()) return provisioningType;
+    }
+    return undefined;
+  }
+
+  async readForm(): Promise<ComputeEngineModel> {
+    Logger.info('Reading compute engine form');
+
+    return {
+      machineFamily: await this.page.machineFamilyDropDown.getValue(),
+      series: await this.page.seriesDropDown.getValue(),
+      machineType: await this.page.machineTypeDropDown.getValue(),
+      region: await this.page.regionDropDown.getValue(),
+      provisioningType: await this.getProvisioningModel(),
+      numberOfInstances: parseNumber(await this.page.numberOfInstancesInput.getValue()),
+    };
   }
 
   async fillForm(model: ComputeEngineModel): Promise<void> {

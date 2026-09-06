@@ -2,6 +2,7 @@ import { BasePage } from './Base.page';
 import { PageHeader } from '../../components/PageHeader';
 import { CalculatorInput } from '../../controls/CalculatorInput';
 import { CostDetailsPanel } from '../../components/CostDetailsPanel';
+import { Download, Locator } from '@playwright/test';
 
 export class BaseCalculatorPage extends BasePage {
   private get pageHeaderLocator() {
@@ -28,7 +29,7 @@ export class BaseCalculatorPage extends BasePage {
     return new CalculatorInput(this.totalUsageLimitInputLocator);
   }
 
-  private get costDetailsPanelLocator() {
+  private get costDetailsPanelLocator(): Locator {
     return this.page.locator('div.uMSQA');
   }
 
@@ -38,5 +39,11 @@ export class BaseCalculatorPage extends BasePage {
 
   constructor(path: string) {
     super(path);
+  }
+
+  async downloadReport(): Promise<Download> {
+    const downloadPromise = this.page.waitForEvent('download');
+    await this.costDetailsPanel.clickDownload();
+    return await downloadPromise;
   }
 }

@@ -6,11 +6,19 @@ export class CostDetailsPanel extends BaseComponent {
     return this.rootElement.locator('label.RI8Tpc');
   }
 
+  private get downloadButtonLocator(): Locator {
+    return this.rootElement.locator('button.WLATBe');
+  }
+
   constructor(rootElement: Locator) {
     super(rootElement);
   }
 
   async getComputeValue(): Promise<string> {
     return await this.computeValueLabelLocator.innerText();
+  }
+
+  async clickDownload() {
+    await this.downloadButtonLocator.click();
   }
 }
