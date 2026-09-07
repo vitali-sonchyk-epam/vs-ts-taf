@@ -23,6 +23,7 @@ src/**/*.js
 src/**/*.js.map
 
 .playwright-mcp
+.playwright-cli
 reviews
 
 .env
