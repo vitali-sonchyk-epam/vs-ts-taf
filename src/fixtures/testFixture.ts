@@ -3,6 +3,7 @@ import { ComputeEngineSteps } from '../steps/ComputeEngine.steps';
 import { CloudSQLSteps } from '../steps/CloudSQL.steps';
 import { KubernetesEngineSteps } from '../steps/KubernetesEngine.steps';
 import { WelcomeSteps } from '../steps/Welcome.steps';
+import { AddToEstimateModalSteps } from '../steps/AddToEstimateModal.steps';
 import { PageContext } from '../context/PageContext';
 
 type Fixtures = {
@@ -11,6 +12,7 @@ type Fixtures = {
   computeEngineSteps: ComputeEngineSteps;
   cloudSQLSteps: CloudSQLSteps;
   kubernetesEngineSteps: KubernetesEngineSteps;
+  addToEstimateModalSteps: AddToEstimateModalSteps;
 };
 
 export const test = base.extend<Fixtures>({
@@ -33,6 +35,9 @@ export const test = base.extend<Fixtures>({
   },
   kubernetesEngineSteps: async ({ bindPage: _bindPage }, use) => {
     await use(new KubernetesEngineSteps());
+  },
+  addToEstimateModalSteps: async ({ bindPage: _bindPage }, use) => {
+    await use(new AddToEstimateModalSteps());
   },
 });
 
