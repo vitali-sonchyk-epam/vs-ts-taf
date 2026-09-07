@@ -21,7 +21,7 @@ test.describe('Cloud SQL', () => {
       { tag: Tags.Smoke },
       async ({ cloudSQLSteps }) => {
         const actualUsageLimit = await cloudSQLSteps.getTotalUsageLimit(usageLimit.instances);
-        expect(actualUsageLimit).toEqual(26);
+        expect(actualUsageLimit).toEqual(usageLimit.expectedUsageLimit);
       },
     );
   });
