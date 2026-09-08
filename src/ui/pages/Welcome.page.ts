@@ -35,9 +35,11 @@ export class WelcomePage extends BaseCalculatorPage {
     await this.allLanguagesOptionsLocator.filter({ hasText: selectorLabel }).click();
   }
 
-  async getAllHeaderLabels(): Promise<string[]> {
-    const labels = await this.allHeaderLabels.filter({ visible: true }).allInnerTexts();
-    // The first anchor is the logo and has no text.
-    return labels.map((label) => label.trim()).filter(Boolean);
+  async getAllHeaderLabels(): Promise<Array<string>> {
+    const labels = await this.allHeaderLabels
+      .filter({ visible: true })
+      .filter({ hasText: /\S+/ })
+      .allInnerTexts();
+    return labels.map((label) => label.trim());
   }
 }
