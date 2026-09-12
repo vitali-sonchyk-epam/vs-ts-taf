@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(git mv *)",
+      "Bash(mv src/tests/seed.spec.ts src/tests/seed.tests.ts)",
+      "mcp__playwright-test",
+      "Bash(npx playwright *)",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Edit(src/**)",
+      "Write(src/**)",
+      "MultiEdit(src/**)",
+      "Edit(spec/**)",
+      "Write(spec/**)",
+      "Bash(git check-ignore *)",
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(Object.keys\\({...p.dependencies,...p.devDependencies}\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(cp \"screenshots/screenShots.tests.ts/Screenshots-tests-Welcome-page-1.webp\" \"/tmp/backup-welcome.webp\")",
+      "Bash(cp \"screenshots/screenShots.tests.ts/Screenshots-tests-Welcome-page-1.webp\" \"C:/Users/VITALI~1/AppData/Local/Temp/claude/c--CDP-sources-vs-ts-taf/59968660-877f-4b81-bbea-a756098c88b4/scratchpad/backup-welcome.webp\")",
+      "Bash(REPORTER=html npx playwright test src/tests/screenShots.tests.ts --project=cloud-calculator)",
+      "Bash(cp \"/tmp/backup-welcome.webp\" \"screenshots/screenShots.tests.ts/Screenshots-tests-Welcome-page-1.webp\")",
+      "Bash(rm -rf playwright-report test-results)"
+    ]
+  }
+}

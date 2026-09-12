@@ -15,11 +15,15 @@ blob-report
 # Downloaded files saved during tests
 downloads
 
+# Agent loop reports
+agent-reports
+
 # Compiled TypeScript output (src is TS-only)
 src/**/*.js
 src/**/*.js.map
 
 .playwright-mcp
+.playwright-cli
 reviews
 
 .env

@@ -7,6 +7,8 @@
     "test": "playwright test",
     "test:smoke": "playwright test --grep \"@smoke\"",
     "test:headed": "playwright test --headed",
+    "agent:chain": "tsx agents/chain",
+    "agent:orchestrator": "tsx agents/orchestrator",
     "report:clean": "node -e \"require('fs').rmSync('allure-results',{recursive:true,force:true})\"",
     "report:generate": "allure generate allure-results --clean -o allure-report",
     "report:open": "allure open allure-report",
@@ -23,8 +25,11 @@
     "node": ">=18.20.0"
   },
   "devDependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.252",
+    "@anthropic-ai/sdk": "^0.122.0",
     "@eslint/js": "^10.0.1",
     "@faker-js/faker": "^10.6.0",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@playwright/test": "^1.62.1",
     "@reportportal/agent-js-playwright": "^5.4.2",
     "@types/node": "^22.20.1",
@@ -38,8 +43,10 @@
     "eslint-plugin-playwright": "^2.11.0",
     "globals": "^17.11.0",
     "prettier": "^3.9.6",
+    "tsx": "^4.23.13",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.67.0",
-    "winston": "^3.19.0"
+    "winston": "^3.19.0",
+    "zod": "^4.5.4"
   }
 }

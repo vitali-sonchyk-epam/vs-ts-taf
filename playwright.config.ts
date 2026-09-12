@@ -18,6 +18,7 @@ const reportPortalConfig = {
 const reporterByKind: Record<string, ReporterDescription> = {
   list: ['list'],
   html: htmlReporter,
+  json: ['json', { outputFile: process.env['JSON_REPORT_FILE'] ?? 'test-results/report.json' }],
   allure: ['allure-playwright', { resultsDir: 'allure-results' }],
   junit: [
     'junit',
