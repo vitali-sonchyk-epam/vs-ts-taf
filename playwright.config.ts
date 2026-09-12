@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import { defineConfig, type ReporterDescription } from '@playwright/test';
+import { Language } from './src/constants/Enums';
+import type { LocalizationOptions } from './src/fixtures/localizationFixture';
 
 // Pick a single reporter based on the REPORTER value from `.env` (defaults to html).
 const reporterKind = process.env['REPORTER'] ?? 'html';
@@ -34,7 +36,15 @@ const reporterByKind: Record<string, ReporterDescription> = {
 
 const reporter: ReporterDescription = reporterByKind[reporterKind] ?? htmlReporter;
 
-export default defineConfig({
+const localizationTests = '**/localization.tests.ts';
+
+const browserOptions = {
+  browserName: 'chromium' as const,
+  channel: 'chrome',
+  viewport: { width: 1920, height: 1080 },
+};
+
+export default defineConfig<LocalizationOptions>({
   testDir: './src/tests',
   testMatch: ['**/*.tests.ts'],
   snapshotPathTemplate: './screenshots/{testFilePath}/{arg}.webp',
@@ -63,11 +73,16 @@ export default defineConfig({
   projects: [
     {
       name: 'cloud-calculator',
-      use: {
-        browserName: 'chromium',
-        channel: 'chrome',
-        viewport: { width: 1920, height: 1080 },
-      },
+      testIgnore: localizationTests,
+      use: browserOptions,
     },
+    ...Object.entries(Language).map(([name, language]) => ({
+      name: `cloud-calculator-l18n-${name}`,
+      testMatch: localizationTests,
+      use: {
+        ...browserOptions,
+        language: language,
+      },
+    })),
   ],
 });

@@ -14,3 +14,9 @@ export enum EstimationModule {
   CloudSQL = 'Cloud SQL',
   KubernetesEngine = 'Kubernetes Engine',
 }
+
+export enum Language {
+  English = 'English',
+  German = 'German',
+  French = 'French',
+}

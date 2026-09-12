@@ -72,11 +72,38 @@ npx playwright test src/tests/screenShots.tests.ts
 # Update the stored screenshot baselines under screenshots/
 npx playwright test src/tests/screenShots.tests.ts --update-snapshots
 
+# Run the localization suite once per language
+npx playwright test src/tests/localization.tests.ts
+
+# Run the localization suite for a single language
+npx playwright test --project=cloud-calculator-l18n-German
+
+# Run only the functional (non-localization) suites
+npx playwright test --project=cloud-calculator
+
 # Open the interactive UI mode
 npx playwright test --ui
 ```
 
 Tests are tagged with the values in `src/constants/Tags.ts` — `@smoke`, `@extended`, and `@sanity` (used by the screenshot suite) — so any of them can be selected with `npx playwright test --grep "@sanity"`.
+
+### Test projects
+
+`playwright.config.ts` declares one functional project plus one project per member of the `Language` enum:
+
+| Project | Specs it runs | `language` option |
+| --- | --- | --- |
+| `cloud-calculator` | everything except `localization.tests.ts` (`testIgnore`) | – |
+| `cloud-calculator-l18n-English` | `localization.tests.ts` only (`testMatch`) | `Language.English` |
+| `cloud-calculator-l18n-German` | `localization.tests.ts` only (`testMatch`) | `Language.German` |
+| `cloud-calculator-l18n-French` | `localization.tests.ts` only (`testMatch`) | `Language.French` |
+
+The language projects are generated from `Object.entries(Language)`, and `language` is a Playwright [test option](https://playwright.dev/docs/test-parameterize) declared in `src/fixtures/localizationFixture.ts`. The spec itself is language-agnostic: it reads `language` from the fixture and looks the expected labels up in `src/i18n/localizationSourceData.ts`. Adding a language therefore means adding an enum member plus its two entries in the i18n data — no test code changes.
+
+```powershell
+# Confirm the spec-to-project routing without running anything
+npx playwright test --list
+```
 
 ## Linting and formatting
 
@@ -171,13 +198,16 @@ src/
   fixtures/
     testFixture.ts               # Extends base test with step fixtures + auto page binding
     downloadFixture.ts           # Extends testFixture with a `downloads` list, cleaned up after each test
+    localizationFixture.ts       # Extends testFixture with the `language` test option
+  i18n/
+    localizationSourceData.ts    # languageSelectorLabels + headerTranslations per Language
   ui/
     BaseElement.ts               # Base element wrapper (root Locator, waitForDisplayed)
     pages/
       base/
         Base.page.ts             # Shared page behaviour (open, cookies, waitForPageUrl)
         BaseCalculator.page.ts   # Shared calculator-page element getters
-      Welcome.page.ts            # Calculator landing page (estimate modal + button getters)
+      Welcome.page.ts            # Calculator landing page (estimate modal, language selector, header links)
       ComputeEngine.page.ts      # Compute Engine form element getters
       CloudSQL.page.ts           # Cloud SQL form element getters
       KubernetesEngine.page.ts   # Kubernetes Engine form element getters
@@ -192,10 +222,11 @@ src/
   steps/                         # Actions/orchestration on top of page objects
     base/
       BaseCalculation.steps.ts   # Shared calculator step actions (generic base)
-    Welcome.steps.ts             # Navigation to an estimate module
+    Welcome.steps.ts             # Navigation to an estimate module + language selection
     ComputeEngine.steps.ts       # Compute Engine form actions
     CloudSQL.steps.ts            # Cloud SQL form actions
     KubernetesEngine.steps.ts    # Kubernetes Engine form actions
+    AddToEstimateModal.steps.ts  # "Add to this estimate" modal actions
     models/                      # Form input models
     builders/                    # Fluent builders for the models
   testData/
@@ -203,9 +234,10 @@ src/
     CloudSQLTestData.ts          # Cloud SQL data-driven cases
     KubernetesEngineTestData.ts  # Kubernetes Engine data-driven cases
   constants/
-    Tags.ts                      # Shared test tags (@smoke, @extended)
+    Tags.ts                      # Shared test tags (@smoke, @extended, @sanity)
     BlockNames.ts                # Estimate block names
-    Enums.ts                     # ProvisioningType, CloudSQLServiceType, EstimationModule
+    AddToEstimateModalText.ts    # Expected text in the "Add to this estimate" modal
+    Enums.ts                     # ProvisioningType, CloudSQLServiceType, EstimationModule, Language
   utils/
     Logger.ts                    # Static logger; also emits Allure steps when REPORTER=allure
     number.ts                    # parseNumber helper
@@ -217,11 +249,16 @@ src/
     computeEngine.tests.ts       # Data-driven Compute Engine tests
     cloudSQL.tests.ts            # Data-driven Cloud SQL tests
     kubernetesEngine.tests.ts    # Data-driven Kubernetes Engine tests
+    addToEstimateModal.tests.ts  # "Add to this estimate" modal element-presence tests
     costReportDownload.tests.ts  # Downloads and validates a Compute Engine cost report
+    localization.tests.ts        # Data-driven header localization tests (one run per language project)
     screenShots.tests.ts         # Visual regression (toHaveScreenshot) tests
+    seed.spec.ts                 # Seed file used by the Playwright test-generator agent (not a real test)
 agents/                  # AI failure-analysis scripts (see AI failure-analysis agents above)
 agent-reports/           # Markdown reports written by the agents (AGENT_REPORT_DIR)
+.claude/                 # Claude Code skills, commands, and agent definitions for this repo
 spec/                    # Directory for test plans (e.g. generated by the Playwright test planner)
+reviews/                 # Markdown review reports produced by the review skills
 screenshots/             # Committed screenshot baselines (see snapshotPathTemplate)
 downloads/               # Downloaded test artifacts (DOWNLOAD_PATH)
 test cases/              # Manual test-case checklists (e.g. new-tests-checklist.md)
@@ -236,7 +273,8 @@ tsconfig.json            # TypeScript compiler options
 - **Spec files** — camelCase with the `.tests.ts` suffix (matched by `testMatch` in `playwright.config.ts`).
 - **Utilities** — lowercase filenames (no default class export).
 - **Pages vs. Steps** — page objects expose only element/component getters; all interaction (filling forms, clicking, reading values) lives in step classes under `src/steps`, with shared actions in `BaseCalculationSteps`.
-- **Fixtures & page context** — step classes are provided to tests via fixtures in `src/fixtures/testFixture.ts`; an auto `bindPage` fixture stores the active `Page` in `PageContext` so page objects can resolve it without constructor plumbing.
+- **Fixtures & page context** — step classes are provided to tests via fixtures in `src/fixtures/testFixture.ts`; an auto `bindPage` fixture stores the active `Page` in `PageContext` so page objects can resolve it without constructor plumbing. `downloadFixture.ts` and `localizationFixture.ts` extend it with a `downloads` list and the `language` test option respectively.
+- **Localization data** — expected translations live in `src/i18n/localizationSourceData.ts`, keyed by the `Language` enum: `headerTranslations` holds the expected header labels and `languageSelectorLabels` maps each enum member to the native label rendered in the site's language selector (`German` → `Deutsch`). Specs never hardcode a language.
 - **Element access** — page objects expose `Locator`/control getters that are lazy by design and resolved only when step actions run.
 - **Assertions** — prefer Playwright's web-first `expect` matchers (`toBeVisible`, `toHaveURL`, ...) which auto-wait/poll up to the configured `expect.timeout`.
 - **Logging** — use `Logger` (`src/utils/Logger.ts`) instead of `console.*`; it writes to the console via `winston` and, only when `REPORTER=allure`, also emits Allure steps.
@@ -244,8 +282,8 @@ tsconfig.json            # TypeScript compiler options
 ## Configuration notes
 
 - `baseURL` is set to `https://cloud.google.com` in `playwright.config.ts` and can be overridden via the `BASE_URL` environment variable (loaded from `.env`).
-- Tests are discovered from `src/tests` via `testMatch: ['**/*.tests.ts']` and run in the single `cloud-calculator` project, fully parallel with no retries.
-- The project runs real Google Chrome (`browserName: 'chromium'` with `channel: 'chrome'`) at a fixed `1920x1080` viewport, so screenshot baselines are reproducible across machines and in both headed and headless runs. Add more projects (Firefox, WebKit) as needed.
+- Tests are discovered from `src/tests` via `testMatch: ['**/*.tests.ts']` and run fully parallel with no retries. They are split across the projects listed under [Test projects](#test-projects): the functional project uses `testIgnore` to skip the localization spec while the `cloud-calculator-l18n-*` projects use `testMatch` to run only that spec, so both sets are complementary and nothing runs twice.
+- Every project shares the same `browserOptions`: real Google Chrome (`browserName: 'chromium'` with `channel: 'chrome'`) at a fixed `1920x1080` viewport, so screenshot baselines are reproducible across machines and in both headed and headless runs. Add more browsers (Firefox, WebKit) by extending that object.
 - Screenshot baselines are stored as `screenshots/{testFilePath}/{arg}.webp` with a `maxDiffPixels: 100` tolerance. Regenerate them with `npx playwright test src/tests/screenShots.tests.ts --update-snapshots` and commit the result.
 - Screenshots are captured on failure, and traces and video are retained on failure (`use.screenshot` / `use.trace` / `use.video`), under `test-results/`.
 - Timeouts: global test timeout `120s`, action/expect timeouts `10s`, navigation timeout `90s`.

@@ -1,7 +1,8 @@
 import { expect } from '@playwright/test';
 import { WelcomePage } from '../ui/pages/Welcome.page';
-import { EstimationModule } from '../constants/Enums';
+import { EstimationModule, Language } from '../constants/Enums';
 import { BlockNames } from '../constants/BlockNames';
+import { languageSelectorLabels } from '../i18n/localizationSourceData';
 import { Logger } from '../utils/Logger';
 
 const blockNameByModule: Record<EstimationModule, string> = {
@@ -34,5 +35,16 @@ export class WelcomeSteps {
     await this.welcomePage.addToEstimateButton.click();
     const modal = await this.welcomePage.estimationModal.waitForDisplayed();
     await modal.openEstimateBlock(blockName);
+  }
+
+  async selectLanguage(language: Language): Promise<void> {
+    Logger.info(`Selecting language: ${language}`);
+    await this.welcomePage.openLanguageSelector();
+    await this.welcomePage.selectLanguage(languageSelectorLabels[language]);
+  }
+
+  async getAllHeaderLabels() {
+    Logger.info('Retrieving all header labels');
+    return await this.welcomePage.getAllHeaderLabels();
   }
 }
