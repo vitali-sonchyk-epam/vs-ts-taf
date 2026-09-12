@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { test, expect } from '../fixtures/testFixture';
-import { Tags } from '../constants/Tags';
-import { EstimationModule } from '../constants/Enums';
-import { kubernetesEngineFormCases } from '../testData/KubernetesEngineTestData';
+import { test, expect } from '../../fixtures/testFixture';
+import { Tags } from '../../constants/Tags';
+import { EstimationModule } from '../../constants/Enums';
+import { kubernetesEngineFormCases } from '../../testData/KubernetesEngineTestData';
 
 test.describe('Kubernetes Engine', () => {
   test.beforeEach(async ({ welcomeSteps }) => {

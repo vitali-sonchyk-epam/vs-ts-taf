@@ -1,5 +1,5 @@
-import { test, expect } from '../fixtures/localizationFixture';
-import { headerTranslations } from '../i18n/localizationSourceData';
+import { test, expect } from '../../fixtures/localizationFixture';
+import { headerTranslations } from '../../i18n/localizationSourceData';
 
 test.describe('localization tests', () => {
   test.beforeEach(async ({ welcomeSteps }) => {

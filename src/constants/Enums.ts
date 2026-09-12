@@ -20,3 +20,8 @@ export enum Language {
   German = 'German',
   French = 'French',
 }
+
+export enum Locale {
+  En = 'GB',
+  Pl = 'PL',
+}
