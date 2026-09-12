@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { defineConfig, type ReporterDescription } from '@playwright/test';
 import { Language } from './src/constants/Enums';
+import { apiConfig } from './src/config/api.config';
 import type { LocalizationOptions } from './src/fixtures/localizationFixture';
 
 // Pick a single reporter based on the REPORTER value from `.env` (defaults to html).
@@ -37,6 +38,7 @@ const reporterByKind: Record<string, ReporterDescription> = {
 const reporter: ReporterDescription = reporterByKind[reporterKind] ?? htmlReporter;
 
 const localizationTests = '**/localization.tests.ts';
+const apiTests = '**/api/**/*.tests.ts';
 
 const browserOptions = {
   browserName: 'chromium' as const,
@@ -73,8 +75,13 @@ export default defineConfig<LocalizationOptions>({
   projects: [
     {
       name: 'cloud-calculator',
-      testIgnore: localizationTests,
+      testIgnore: [localizationTests, apiTests],
       use: browserOptions,
+    },
+    {
+      name: 'api',
+      testMatch: apiTests,
+      use: { baseURL: apiConfig.baseUrl },
     },
     ...Object.entries(Language).map(([name, language]) => ({
       name: `cloud-calculator-l18n-${name}`,
