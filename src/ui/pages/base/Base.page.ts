@@ -11,7 +11,7 @@ export abstract class BasePage {
     return this.page.locator('button.glue-cookie-notification-bar__accept');
   }
 
-  protected constructor(private readonly path: string) {}
+  constructor(private readonly path: string) {}
 
   async open() {
     Logger.info('Opening page: %s', this.path);
