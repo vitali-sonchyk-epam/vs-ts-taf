@@ -1,6 +1,6 @@
 import { Locator } from '@playwright/test';
-import { BaseCalculatorPage } from './base/BaseCalculator.page';
-import { DropDown } from '../controls/DropDown';
+import { BaseCalculatorPage } from '../base/BaseCalculator.page';
+import { DropDown } from '../../controls/DropDown';
 
 export class KubernetesEnginePage extends BaseCalculatorPage {
   get machineFamilyDropDown(): DropDown {

@@ -1,5 +1,5 @@
-import { WelcomePage } from '../ui/pages/Welcome.page';
-import { Logger } from '../utils/Logger';
+import { WelcomePage } from '../../ui/pages/cloudCalculator/Welcome.page';
+import { Logger } from '../../utils/Logger';
 
 export class AddToEstimateModalSteps {
   private welcomePage: WelcomePage;

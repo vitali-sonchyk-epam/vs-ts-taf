@@ -1,10 +1,10 @@
 import { expect } from '@playwright/test';
-import { ProvisioningType } from '../constants/Enums';
-import { ComputeEnginePage } from '../ui/pages/ComputeEngine.page';
-import { Logger } from '../utils/Logger';
-import { parseNumber } from '../utils/number';
-import { ComputeEngineModel } from './models/ComputeEngineModel';
-import { BaseCalculationSteps } from './base/BaseCalculation.steps';
+import { ProvisioningType } from '../../constants/Enums';
+import { ComputeEnginePage } from '../../ui/pages/cloudCalculator/ComputeEngine.page';
+import { Logger } from '../../utils/Logger';
+import { parseNumber } from '../../utils/number';
+import { ComputeEngineModel } from '../models/ComputeEngineModel';
+import { BaseCalculationSteps } from '../base/BaseCalculation.steps';
 
 export class ComputeEngineSteps extends BaseCalculationSteps<
   ComputeEngineModel,

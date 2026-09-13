@@ -1,14 +1,16 @@
 import { Locator } from '@playwright/test';
-import { BasePage } from '../base/Base.page';
+import { BaseNavigationalPage } from '../base/BaseNavigational.page';
 
-export class ShopPage extends BasePage {
+export class ShopPage extends BaseNavigationalPage {
   constructor() {
     super('/store');
   }
 
+  async open(): Promise<void> {
+    await this.navigate();
+  }
+
   get iphoneCategoryLinkLocator(): Locator {
-    // Scoped by the stable "product nav card" class rather than the list's
-    // accessible name, which is localized (e.g. "Produkt" in Polish).
     return this.page.locator('a.rf-productnav-card-title', { hasText: /^\s*iPhone\s*$/ });
   }
 

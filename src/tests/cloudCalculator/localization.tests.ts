@@ -3,7 +3,7 @@ import { headerTranslations } from '../../i18n/localizationSourceData';
 
 test.describe('localization tests', () => {
   test.beforeEach(async ({ welcomeSteps }) => {
-    await welcomeSteps.open();
+    await welcomeSteps.openPage();
   });
 
   test('check localization on the welcome page', async ({ language, welcomeSteps }) => {

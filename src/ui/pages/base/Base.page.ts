@@ -2,7 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { Logger } from '../../../utils/Logger';
 import { PageContext } from '../../../context/PageContext';
 
-export abstract class BasePage {
+export class BasePage {
   protected get page(): Page {
     return PageContext.get();
   }
@@ -11,14 +11,7 @@ export abstract class BasePage {
     return this.page.locator('button.glue-cookie-notification-bar__accept');
   }
 
-  constructor(private readonly path: string) {}
-
-  async open() {
-    Logger.info('Opening page: %s', this.path);
-    await this.page.goto(this.path);
-    await this.waitForPageUrl();
-    await this.confirmCookies();
-  }
+  constructor(protected readonly path: string) {}
 
   async confirmCookies() {
     if (await this.cookiesConfirmationButton.isVisible()) {

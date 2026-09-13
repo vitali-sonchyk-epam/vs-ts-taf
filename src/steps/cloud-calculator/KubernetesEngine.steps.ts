@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
-import { KubernetesEnginePage } from '../ui/pages/KubernetesEngine.page';
-import { KubernetesEngineModel } from './models/KubernetesEngineModel';
-import { BaseCalculationSteps } from './base/BaseCalculation.steps';
-import { Logger } from '../utils/Logger';
+import { KubernetesEnginePage } from '../../ui/pages/cloudCalculator/KubernetesEngine.page';
+import { KubernetesEngineModel } from '../models/KubernetesEngineModel';
+import { BaseCalculationSteps } from '../base/BaseCalculation.steps';
+import { Logger } from '../../utils/Logger';
 
 export class KubernetesEngineSteps extends BaseCalculationSteps<
   KubernetesEngineModel,

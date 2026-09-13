@@ -5,7 +5,7 @@ import { EstimationModule } from '../../constants/Enums';
 
 test.describe('Screenshots tests', () => {
   test('Welcome page', { tag: Tags.Sanity }, async ({ welcomeSteps }) => {
-    await welcomeSteps.open();
+    await welcomeSteps.openPage();
     await expect(PageContext.get()).toHaveScreenshot();
   });
 

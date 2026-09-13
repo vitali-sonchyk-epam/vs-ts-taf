@@ -1,10 +1,11 @@
 import { Locator } from '@playwright/test';
-import { BasePage } from '../base/Base.page';
+import { BaseNavigationalPage } from '../base/BaseNavigational.page';
 
-export class HomePage extends BasePage {
+export class HomePage extends BaseNavigationalPage {
   constructor() {
     super('');
   }
+
   get continuteButtonLocator(): Locator {
     return this.page.locator('a.ac-ls-continue');
   }

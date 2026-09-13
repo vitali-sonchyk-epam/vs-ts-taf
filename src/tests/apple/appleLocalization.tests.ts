@@ -5,22 +5,20 @@ import { priceCurrencyIndicator } from '../../i18n/appleLocalizationSourceData';
 const iphoneModels = ['iPhone 16', 'iPhone 17', 'iPhone Air'];
 
 test.describe('Apple localization tests', () => {
-  test.beforeEach(async ({ homeSteps, shopSteps }) => {
+  test.beforeEach(async ({ homeSteps }) => {
     await homeSteps.openPage();
     await homeSteps.applyCurrentLocale();
-
-    // Navigate to Store > iPhone listing
-    await homeSteps.navigateToStore();
-    await shopSteps.navigateToIphoneListing();
   });
 
   for (const model of iphoneModels) {
     test(
       `iPhone price shows region currency prefix: ${model}`,
       { tag: [ProductTags.Apple, Tags.Localization] },
-      async ({ shopSteps, appLocale }) => {
+      async ({ shopSteps, appLocale, homeSteps }) => {
+        await homeSteps.openStore();
+        await shopSteps.openIphoneList();
         await expect
-          .poll(() => shopSteps.getIphonePriceText(model))
+          .poll(() => shopSteps.getIphonePrice(model))
           .toContain(priceCurrencyIndicator[appLocale]);
       },
     );
