@@ -1,5 +1,8 @@
 # vs-ts-taf — Playwright + TypeScript Test Automation Framework
 
+_README synchronized with project files (scripts, test config, i18n) on 2026-09-13._
+# vs-ts-taf — Playwright + TypeScript Test Automation Framework
+
 End-to-end UI test automation for the [Google Cloud Pricing Calculator](https://cloud.google.com/products/calculator), built with **Playwright**, **TypeScript**, and a layered Page Object / Steps architecture: page objects expose element getters, while step classes drive all interaction and orchestration and are injected into tests through Playwright fixtures.
 
 > **Disclaimer**
@@ -305,3 +308,13 @@ Environment variables (see `.env.example` and `src/types/env.d.ts`):
 | `AGENT_REPORT_DIR` | Directory the agents write their Markdown reports into (default `agent-reports`) |
 - `REPORTER` selects the active reporter (see [Reporting](#reporting)); `RP_ENDPOINT`, `RP_PROJECT`, `RP_API_KEY`, and `RP_LAUNCH` configure the Report Portal integration when `REPORTER=reportportal`.
 - `DOWNLOAD_PATH` sets the directory used for downloaded test artifacts (e.g. cost report CSVs fetched via `downloadFixture`'s `downloads` fixture).
+## SKILL Update Summary
+
+- Verified existing top-level `README.md` content against `package.json`, `playwright.config.ts`, and the `src/` layout.
+- Confirmed scripts in `package.json` match the documented commands under "Getting started", "Running tests", and reporting sections.
+- Confirmed `playwright.config.ts` generates language-specific projects for localization and that `localizationFixture.ts` exposes the `language` option.
+- No missing manifest (`package.json`) detected. No commands were invented; missing or ambiguous information would be marked `_TODO_` (none found).
+
+If you want, I can now (pick one):
+- Add a small `languageData` fixture to centralize `data-value` keys for `selectLanguage` (removes text-based lookups), or
+- Replace other `.filter({ hasText })` usages with attribute-based selectors where applicable.
