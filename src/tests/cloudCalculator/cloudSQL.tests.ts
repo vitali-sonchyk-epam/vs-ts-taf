@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { test, expect } from '../fixtures/testFixture';
-import { Tags } from '../constants/Tags';
-import { EstimationModule } from '../constants/Enums';
-import { cloudSQLFormCases } from '../testData/CloudSQLTestData';
+import { test, expect } from '../../fixtures/testFixture';
+import { Tags } from '../../constants/Tags';
+import { EstimationModule } from '../../constants/Enums';
+import { cloudSQLFormCases } from '../../testData/CloudSQLTestData';
 
 test.describe('Cloud SQL', () => {
   const usageLimitCases = [

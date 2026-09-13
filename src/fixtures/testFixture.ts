@@ -1,9 +1,9 @@
 import { test as base } from '@playwright/test';
-import { ComputeEngineSteps } from '../steps/ComputeEngine.steps';
-import { CloudSQLSteps } from '../steps/CloudSQL.steps';
-import { KubernetesEngineSteps } from '../steps/KubernetesEngine.steps';
-import { WelcomeSteps } from '../steps/Welcome.steps';
-import { AddToEstimateModalSteps } from '../steps/AddToEstimateModal.steps';
+import { ComputeEngineSteps } from '../steps/cloud-calculator/ComputeEngine.steps';
+import { CloudSQLSteps } from '../steps/cloud-calculator/CloudSQL.steps';
+import { KubernetesEngineSteps } from '../steps/cloud-calculator/KubernetesEngine.steps';
+import { WelcomeSteps } from '../steps/cloud-calculator/Welcome.steps';
+import { AddToEstimateModalSteps } from '../steps/cloud-calculator/AddToEstimateModal.steps';
 import { PageContext } from '../context/PageContext';
 
 type Fixtures = {

@@ -1,5 +1,5 @@
-import { BaseCalculatorPage } from './base/BaseCalculator.page';
-import { DropDown } from '../controls/DropDown';
+import { BaseCalculatorPage } from '../base/BaseCalculator.page';
+import { DropDown } from '../../controls/DropDown';
 
 export class CloudSQLPage extends BaseCalculatorPage {
   get serviceTypeDropDown(): DropDown {

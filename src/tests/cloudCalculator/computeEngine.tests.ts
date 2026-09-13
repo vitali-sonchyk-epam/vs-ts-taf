@@ -1,8 +1,8 @@
 import 'dotenv/config';
-import { test, expect } from '../fixtures/testFixture';
-import { Tags } from '../constants/Tags';
-import { EstimationModule } from '../constants/Enums';
-import { computeEngineFormCases } from '../testData/ComputeEngineTestData';
+import { test, expect } from '../../fixtures/testFixture';
+import { Tags } from '../../constants/Tags';
+import { EstimationModule } from '../../constants/Enums';
+import { computeEngineFormCases } from '../../testData/ComputeEngineTestData';
 
 test.describe('Compute Engine', () => {
   const usageLimitCases = [

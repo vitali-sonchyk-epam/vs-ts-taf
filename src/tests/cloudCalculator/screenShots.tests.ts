@@ -1,11 +1,11 @@
-import { test, expect } from '../fixtures/testFixture';
-import { Tags } from '../constants/Tags';
-import { PageContext } from '../context/PageContext';
-import { EstimationModule } from '../constants/Enums';
+import { test, expect } from '../../fixtures/testFixture';
+import { Tags } from '../../constants/Tags';
+import { PageContext } from '../../context/PageContext';
+import { EstimationModule } from '../../constants/Enums';
 
 test.describe('Screenshots tests', () => {
   test('Welcome page', { tag: Tags.Sanity }, async ({ welcomeSteps }) => {
-    await welcomeSteps.open();
+    await welcomeSteps.openPage();
     await expect(PageContext.get()).toHaveScreenshot();
   });
 

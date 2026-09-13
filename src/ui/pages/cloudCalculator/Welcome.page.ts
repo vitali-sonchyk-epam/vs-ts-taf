@@ -1,8 +1,8 @@
 import { Locator } from '@playwright/test';
-import { BaseCalculatorPage } from './base/BaseCalculator.page';
-import { EstimationModal } from '../components/EstimationModal';
+import { EstimationModal } from '../../components/EstimationModal';
+import { BaseNavigationalPage } from '../base/BaseNavigational.page';
 
-export class WelcomePage extends BaseCalculatorPage {
+export class WelcomePage extends BaseNavigationalPage {
   get estimationModal(): EstimationModal {
     return new EstimationModal(this.page);
   }
@@ -15,8 +15,8 @@ export class WelcomePage extends BaseCalculatorPage {
     return this.page.locator('div.VfPpkd-aPP78e');
   }
 
-  get allLanguagesOptionsLocator(): Locator {
-    return this.page.locator('li.MCs1Pd');
+  languageOptionLocator(languageCode: string): Locator {
+    return this.page.locator(`li.MCs1Pd[data-value="${languageCode}"]`);
   }
 
   get allHeaderLabels(): Locator {
@@ -27,12 +27,17 @@ export class WelcomePage extends BaseCalculatorPage {
     super('/products/calculator');
   }
 
+  async open() {
+    await this.navigate();
+    await this.confirmCookies();
+  }
+
   async openLanguageSelector(): Promise<void> {
     await this.languageSelectorLocator.click();
   }
 
-  async selectLanguage(selectorLabel: string): Promise<void> {
-    await this.allLanguagesOptionsLocator.filter({ hasText: selectorLabel }).click();
+  async selectLanguage(languageCode: string): Promise<void> {
+    await this.languageOptionLocator(languageCode).click();
   }
 
   async getAllHeaderLabels(): Promise<Array<string>> {

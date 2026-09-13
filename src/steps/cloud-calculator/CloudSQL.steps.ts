@@ -1,7 +1,7 @@
-import { CloudSQLPage } from '../ui/pages/CloudSQL.page';
-import { CloudSQLModel } from './models/CloudSQLModel';
-import { BaseCalculationSteps } from './base/BaseCalculation.steps';
-import { Logger } from '../utils/Logger';
+import { CloudSQLPage } from '../../ui/pages/cloudCalculator/CloudSQL.page';
+import { CloudSQLModel } from '../models/CloudSQLModel';
+import { BaseCalculationSteps } from '../base/BaseCalculation.steps';
+import { Logger } from '../../utils/Logger';
 
 export class CloudSQLSteps extends BaseCalculationSteps<CloudSQLModel, CloudSQLPage> {
   constructor() {

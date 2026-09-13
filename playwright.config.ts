@@ -1,7 +1,11 @@
 import 'dotenv/config';
 import { defineConfig, type ReporterDescription } from '@playwright/test';
-import { Language } from './src/constants/Enums';
+import { Language, Locale } from './src/constants/Enums';
 import type { LocalizationOptions } from './src/fixtures/localizationFixture';
+
+type AppleOptions = {
+  appLocale: Locale;
+};
 
 // Pick a single reporter based on the REPORTER value from `.env` (defaults to html).
 const reporterKind = process.env['REPORTER'] ?? 'html';
@@ -37,6 +41,7 @@ const reporterByKind: Record<string, ReporterDescription> = {
 const reporter: ReporterDescription = reporterByKind[reporterKind] ?? htmlReporter;
 
 const localizationTests = '**/localization.tests.ts';
+const appleLocalizationTests = '**/appleLocalization.tests.ts';
 
 const browserOptions = {
   browserName: 'chromium' as const,
@@ -44,7 +49,7 @@ const browserOptions = {
   viewport: { width: 1920, height: 1080 },
 };
 
-export default defineConfig<LocalizationOptions>({
+export default defineConfig<LocalizationOptions & AppleOptions>({
   testDir: './src/tests',
   testMatch: ['**/*.tests.ts'],
   snapshotPathTemplate: './screenshots/{testFilePath}/{arg}.webp',
@@ -73,8 +78,11 @@ export default defineConfig<LocalizationOptions>({
   projects: [
     {
       name: 'cloud-calculator',
-      testIgnore: localizationTests,
-      use: browserOptions,
+      testIgnore: [localizationTests, appleLocalizationTests],
+      use: {
+        ...browserOptions,
+        baseURL: process.env['BASE_URL'] ?? 'https://cloud.google.com',
+      },
     },
     ...Object.entries(Language).map(([name, language]) => ({
       name: `cloud-calculator-l18n-${name}`,
@@ -82,6 +90,16 @@ export default defineConfig<LocalizationOptions>({
       use: {
         ...browserOptions,
         language: language,
+        baseURL: process.env['BASE_URL'] ?? 'https://cloud.google.com',
+      },
+    })),
+    ...Object.entries(Locale).map(([name, locale]) => ({
+      name: `apple-websit-${name}`,
+      testMatch: appleLocalizationTests,
+      use: {
+        ...browserOptions,
+        baseURL: process.env['APLE_BASE_URL'] ?? 'https://www.apple.com',
+        appLocale: locale,
       },
     })),
   ],

@@ -1,5 +1,8 @@
 # vs-ts-taf — Playwright + TypeScript Test Automation Framework
 
+_README synchronized with project files (scripts, test config, i18n) on 2026-09-13._
+# vs-ts-taf — Playwright + TypeScript Test Automation Framework
+
 End-to-end UI test automation for the [Google Cloud Pricing Calculator](https://cloud.google.com/products/calculator), built with **Playwright**, **TypeScript**, and a layered Page Object / Steps architecture: page objects expose element getters, while step classes drive all interaction and orchestration and are injected into tests through Playwright fixtures.
 
 > **Disclaimer**
@@ -305,3 +308,29 @@ Environment variables (see `.env.example` and `src/types/env.d.ts`):
 | `AGENT_REPORT_DIR` | Directory the agents write their Markdown reports into (default `agent-reports`) |
 - `REPORTER` selects the active reporter (see [Reporting](#reporting)); `RP_ENDPOINT`, `RP_PROJECT`, `RP_API_KEY`, and `RP_LAUNCH` configure the Report Portal integration when `REPORTER=reportportal`.
 - `DOWNLOAD_PATH` sets the directory used for downloaded test artifacts (e.g. cost report CSVs fetched via `downloadFixture`'s `downloads` fixture).
+## Apple localization
+
+This project now includes a small Apple localization test set that demonstrates testing region-specific content on Apple's website. The tests are intentionally lightweight and run separately from the cloud-calculator suites.
+
+Files added and key behaviour:
+- `src/fixtures/appleTestFixture.ts` — Playwright fixture that exposes `appLocale` and binds the page context, and adds an `appLocale` cookie for `https://www.apple.com/` when required.
+- `src/tests/apple/appleLocalization.tests.ts` — Tests that navigate Apple pages, apply the locale, and assert region-specific indicators (e.g. currency prefix) using `src/i18n/appleLocalizationSourceData.ts`.
+- `src/i18n/appleLocalizationSourceData.ts` — Simple mapping of `Locale` → region indicators (currency symbols, etc.).
+- Pages/steps under `src/ui/pages/apple/*` and `src/steps/apple/*` provide navigational helpers and actions for the Apple flows.
+
+How to run the Apple tests:
+
+```powershell
+# Run the Apple localization spec directly
+npx playwright test src/tests/apple/appleLocalization.tests.ts
+
+# Or run a specific Playwright project (if configured in your local `playwright.config.ts`)
+npx playwright test --list
+npx playwright test --project=<apple-project-name>
+```
+
+Notes and caveats:
+- The Apple fixture sets a cookie scoped to `https://www.apple.com/`; tests require network access and may be affected by region-based redirects or cookie/privacy prompts. Use `--headed` for debugging.
+- These tests are intended as examples of cross-site locale validation and are not part of the cloud-calculator functional suites.
+
+If you'd like, I can also add a short README subsection with examples of expected outputs, or centralize `language`/`locale` mappings into a small `languageData` fixture used by both Apple and cloud tests.

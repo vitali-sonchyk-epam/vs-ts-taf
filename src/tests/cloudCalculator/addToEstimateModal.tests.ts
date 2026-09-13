@@ -1,7 +1,7 @@
 import 'dotenv/config';
-import { test, expect } from '../fixtures/testFixture';
-import { Tags } from '../constants/Tags';
-import { AddToEstimateModalText } from '../constants/AddToEstimateModalText';
+import { test, expect } from '../../fixtures/testFixture';
+import { Tags } from '../../constants/Tags';
+import { AddToEstimateModalText } from '../../constants/AddToEstimateModalText';
 
 test.describe('Add to Estimate Modal - Element Presence', () => {
   test.beforeEach(async ({ addToEstimateModalSteps }) => {

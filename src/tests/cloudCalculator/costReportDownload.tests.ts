@@ -1,8 +1,8 @@
-import { test, expect } from '../fixtures/downloadFixture';
-import { Tags } from '../constants/Tags';
-import { EstimationModule, ProvisioningType } from '../constants/Enums';
-import { ComputeEngineModelBuilder } from '../steps/builders/ComputeEngineModelBuilder';
-import { parseNumber } from '../utils/number';
+import { test, expect } from '../../fixtures/downloadFixture';
+import { Tags } from '../../constants/Tags';
+import { EstimationModule, ProvisioningType } from '../../constants/Enums';
+import { ComputeEngineModelBuilder } from '../../steps/builders/ComputeEngineModelBuilder';
+import { parseNumber } from '../../utils/number';
 
 test.describe('Cost report download', () => {
   test.beforeEach(async ({ welcomeSteps }) => {

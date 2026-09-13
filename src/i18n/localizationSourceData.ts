@@ -1,9 +1,9 @@
 import { Language } from '../constants/Enums';
 
-export const languageSelectorLabels: Record<Language, string> = {
-  [Language.English]: 'English',
-  [Language.German]: 'Deutsch',
-  [Language.French]: 'Français',
+export const languageCodes: Record<Language, string> = {
+  [Language.English]: 'en',
+  [Language.German]: 'de',
+  [Language.French]: 'fr',
 };
 
 export const headerTranslations: Record<Language, string[]> = {
