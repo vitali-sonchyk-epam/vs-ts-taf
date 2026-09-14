@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { defineConfig, type ReporterDescription } from '@playwright/test';
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
 import { Language, Locale } from './src/constants/Enums';
 import type { LocalizationOptions } from './src/fixtures/localizationFixture';
 
@@ -102,5 +102,26 @@ export default defineConfig<LocalizationOptions & AppleOptions>({
         appLocale: locale,
       },
     })),
+    {
+      name: 'mobile-ios-smoke-cloude-calculator',
+      grep: /@smoke/,
+      use: {
+        ...devices['iPhone 15 Pro'],
+        baseURL: process.env['BASE_URL'] ?? 'https://cloud.google.com',
+      },
+    },
+    {
+      name: 'tablet-ios-smoke-cloude-calculator',
+      grep: /@smoke/,
+      use: {
+        ...devices['iPad Pro 11'],
+        baseURL: process.env['BASE_URL'] ?? 'https://cloud.google.com',
+      },
+    },
+    {
+      name: 'mobile-android-smoke-cloude-calculator',
+      grep: /@smoke/,
+      use: { ...devices['Pixel 5'] },
+    },
   ],
 });

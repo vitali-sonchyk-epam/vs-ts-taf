@@ -103,6 +103,26 @@ Tests are tagged with the values in `src/constants/Tags.ts` — `@smoke`, `@exte
 
 The language projects are generated from `Object.entries(Language)`, and `language` is a Playwright [test option](https://playwright.dev/docs/test-parameterize) declared in `src/fixtures/localizationFixture.ts`. The spec itself is language-agnostic: it reads `language` from the fixture and looks the expected labels up in `src/i18n/localizationSourceData.ts`. Adding a language therefore means adding an enum member plus its two entries in the i18n data — no test code changes.
 
+### Mobile / Tablet smoke projects
+
+There are also lightweight mobile/tablet projects that run only smoke-tagged tests (`@smoke`) on device emulations. They are configured in `playwright.config.ts` and use a `grep` filter so only tests annotated with `@smoke` execute in these projects.
+
+| Project | Device / Notes | How to run |
+| --- | --- | --- |
+| `mobile-ios-smoke-cloude-calculator` | iPhone 15 Pro emulation; runs `@smoke` tests | `npm run test:smoke -- --project=mobile-ios-smoke-cloude-calculator` |
+| `tablet-ios-smoke-cloude-calculator` | iPad Pro 11 emulation; runs `@smoke` tests | `npm run test:smoke -- --project=tablet-ios-smoke-cloude-calculator` |
+| `mobile-android-smoke-cloude-calculator` | Pixel 5 emulation; runs `@smoke` tests | `npm run test:smoke -- --project=mobile-android-smoke-cloude-calculator` |
+
+Tips:
+
+- To run all smoke tests across projects (functional + mobile), use:
+
+```powershell
+npm run test:smoke
+```
+
+- Ensure the specs you expect to run include the `@smoke` tag (see `src/constants/Tags.ts`). If a mobile project still appears empty, confirm that at least one test file contains `@smoke` in a test title or as an annotation.
+
 ```powershell
 # Confirm the spec-to-project routing without running anything
 npx playwright test --list

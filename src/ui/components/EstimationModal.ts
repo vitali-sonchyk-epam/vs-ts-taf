@@ -4,7 +4,7 @@ import { Logger } from '../../utils/Logger';
 
 export class EstimationModal extends BaseComponent {
   constructor(page: Page) {
-    super(page.locator('div[role="dialog"][aria-label="Add to this estimate"]'));
+    super(page.getByRole('dialog', { name: 'Add to this estimate' }));
   }
 
   get closeButton(): Locator {
@@ -12,7 +12,7 @@ export class EstimationModal extends BaseComponent {
   }
 
   get heading(): Locator {
-    return this.rootElement.getByRole('heading', { level: 3 });
+    return this.rootElement.getByRole('heading').first();
   }
 
   get searchIcon(): Locator {
